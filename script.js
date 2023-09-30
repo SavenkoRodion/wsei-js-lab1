@@ -42,4 +42,8 @@ const calculations = () =>
 }
 
 mainButton.addEventListener("click", () => calculations())
+input1.addEventListener("input", () => calculations())
+input2.addEventListener("input", () => calculations())
+input3.addEventListener("input", () => calculations())
+input4.addEventListener("input", () => calculations())
 
