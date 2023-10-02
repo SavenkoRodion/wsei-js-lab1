@@ -7,13 +7,19 @@
   </head>
   <body>
     <div id="inputContainer">
-      <button id="remove-1">-</button><input type="number" required /><br />
-      <button id="remove-2">-</button><input type="number" required /><br />
-      <button id="remove-3">-</button><input type="number" required /><br />
+      <span>
+        <button id="remove-1">-</button><input type="number" required /><br />
+      </span>
+      <span>
+        <button id="remove-2">-</button><input type="number" required /><br />
+      </span>
+      <span>
+        <button id="remove-3">-</button><input type="number" required /><br />
+      </span>
     </div>
 
-    <button id="mainButton">Przelicz</button>
-    <button id="mainButton">Dodaj pole</button><br /><br />
+    <button id="calculate">Przelicz</button>
+    <button id="add-input">Dodaj pole</button><br /><br />
 
     <div>
       <p>Średnia: <span id="avg"></span></p>
@@ -23,6 +29,7 @@
       <p>Max: <span id="max"></span></p>
     </div>
     <h2 id="error"></h2>
+
     <script src="script.js"></script>
   </body>
 </html>
