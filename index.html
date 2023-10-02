@@ -1,26 +1,28 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
-</head>
-<body>
-    <input id="liczba1" /><br/>
-        <input id="liczba2" /><br/>
-        <input id="liczba3"/><br/>
-        <input id="liczba4"/><br/>
+  </head>
+  <body>
+    <div id="inputContainer">
+      <button id="remove-1">-</button><input type="number" required /><br />
+      <button id="remove-2">-</button><input type="number" required /><br />
+      <button id="remove-3">-</button><input type="number" required /><br />
+    </div>
 
-        <button id="mainButton">Przelicz</button><br/><br/>
-    
+    <button id="mainButton">Przelicz</button>
+    <button id="mainButton">Dodaj pole</button><br /><br />
+
     <div>
-        <p>Średnia: <span id="avg"></span></p><br/>
-        <p>Min: <span id="min"></span></p><br/>
-        <p>Max: <span id="max"></span></p>
+      <p>Średnia: <span id="avg"></span></p>
+      <br />
+      <p>Min: <span id="min"></span></p>
+      <br />
+      <p>Max: <span id="max"></span></p>
     </div>
     <h2 id="error"></h2>
-    <script src="script.js">
-
-    </script>
-</body>
+    <script src="script.js"></script>
+  </body>
 </html>
