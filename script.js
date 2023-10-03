@@ -30,6 +30,7 @@ const resetError = () => {
 };
 
 const calculations = () => {
+  console.log("lol");
   const inputValues = inputArray.map((input) => parseFloat(input.value));
 
   if (inputValues.includes(NaN)) {
@@ -42,7 +43,7 @@ const calculations = () => {
 
   minOutput.innerHTML = Math.min(...inputValues);
   maxOutput.innerHTML = Math.max(...inputValues);
-  avgOutput.innerHTML = inputValues.reduce((a, b) => a + b) / 4;
+  avgOutput.innerHTML = inputValues.reduce((a, b) => a + b) / inputArray.length;
 };
 
 const getNewInput = () => {
@@ -56,8 +57,10 @@ const getNewInput = () => {
 
 const getRemoveInputButton = () => {
   let newRemoveInputButton = document.createElement("button");
-  newRemoveInputButton.id = `remove-${inputArray.length + 1}`;
   newRemoveInputButton.innerHTML = "-";
+  newRemoveInputButton.addEventListener("click", () =>
+    removeRow(newRemoveInputButton)
+  );
 
   return newRemoveInputButton;
 };
@@ -75,8 +78,18 @@ const createNewRow = () => {
   setError();
 };
 
+const removeRow = (element) => {
+  console.log(element.parentElement);
+  inputContainer.removeChild(element.parentElement);
+
+  inputArray = getInputArray();
+  calculations();
+};
+
+document
+  .querySelectorAll(".removeRowButton")
+  .forEach((el) => el.addEventListener("click", () => removeRow(el)));
+
 calculateButton.addEventListener("click", calculations);
-
 inputArray.forEach((input) => input.addEventListener("input", calculations));
-
 addInputButton.addEventListener("click", createNewRow);
