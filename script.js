@@ -10,7 +10,7 @@ const errorOutput = document.querySelector("#error");
 const inputContainer = document.querySelector("#inputContainer");
 
 const getInputArray = () =>
-  Array.from(inputContainer.querySelectorAll("span > input"));
+  Array.from(inputContainer.querySelectorAll("input"));
 
 let inputArray = getInputArray();
 
