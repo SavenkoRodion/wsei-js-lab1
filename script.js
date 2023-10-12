@@ -2,6 +2,7 @@ console.log("hello");
 
 const calculateButton = document.querySelector("#calculate");
 const addInputButton = document.querySelector("#add-input");
+const sumOutput = document.querySelector("#sum");
 const minOutput = document.querySelector("#min");
 const maxOutput = document.querySelector("#max");
 const avgOutput = document.querySelector("#avg");
@@ -14,6 +15,7 @@ const getInputArray = () =>
 let inputArray = getInputArray();
 
 const setError = () => {
+  sumOutput.innerHTML = "";
   minOutput.innerHTML = "";
   maxOutput.innerHTML = "";
   avgOutput.innerHTML = "";
@@ -30,7 +32,6 @@ const resetError = () => {
 };
 
 const calculations = () => {
-  console.log("lol");
   const inputValues = inputArray.map((input) => parseFloat(input.value));
 
   if (inputValues.includes(NaN)) {
@@ -41,6 +42,7 @@ const calculations = () => {
 
   resetError();
 
+  sumOutput.innerHTML = inputValues.reduce((a, b) => a + b);
   minOutput.innerHTML = Math.min(...inputValues);
   maxOutput.innerHTML = Math.max(...inputValues);
   avgOutput.innerHTML = inputValues.reduce((a, b) => a + b) / inputArray.length;
