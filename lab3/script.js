@@ -5,6 +5,8 @@ const domChannel1 = document.querySelector("#channel1");
 
 const globalArray = [];
 
+//To remove, setTimeout will stop
+
 mainSound.addEventListener("loadedmetadata", function () {
   domChannel1.addEventListener("keypress", (e) => {});
   document.addEventListener("keypress", logKey);
