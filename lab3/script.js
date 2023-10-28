@@ -1,28 +1,38 @@
 console.log("hello");
 
-const mainSound = document.querySelector("#mainSound");
+const mainSound = document.querySelector("#mainSound1");
 const domChannel1 = document.querySelector("#channel1");
 
 const globalArray = [];
 
-domChannel1.addEventListener("keypress", (e) => {});
-
-document.addEventListener("keypress", logKey);
+mainSound.addEventListener("loadedmetadata", function () {
+  domChannel1.addEventListener("keypress", (e) => {});
+  document.addEventListener("keypress", logKey);
+});
 
 class Sound {
-  constructor(source, startDate, duration) {
+  constructor(source, startDate, maxDuration) {
     this.source = source;
     this.startDate = startDate;
+    this.maxDuration = maxDuration;
+    this.actualDuration = null;
   }
 }
 
 const playSound = (source) => {
-  mainSound.src = source;
+  //mainSound.src = source;
+  console.log(mainSound.src);
   mainSound.currentTime = 0;
-  globalArray.push(new Sound(source, Date.now(), mainSound.duration));
+  globalArray.push(new Sound(mainSound.src, Date.now(), mainSound.duration));
   mainSound.play();
-  console.log(mainSound.duration);
-  console.dir(mainSound);
+  if (globalArray.length > 1) {
+    globalArray.at(-2).actualDuration =
+      (globalArray.at(-1).startDate - globalArray.at(-2).startDate) / 1000 >
+      globalArray.at(-2).maxDuration
+        ? globalArray.at(-2).maxDuration
+        : (globalArray.at(-1).startDate - globalArray.at(-2).startDate) / 1000;
+    console.log(...globalArray);
+  }
 };
 
 function logKey(e) {
