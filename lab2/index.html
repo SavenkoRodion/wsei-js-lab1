@@ -10,53 +10,94 @@
         padding: 0;
       }
       img {
-        max-width: 50vw;
-        max-height: 50vh;
+        width: 200px;
+        height: 200px;
         display: inline-block;
         overflow-x: hidden;
       }
-      #slider-wrapper {
-        max-width: 50vw;
-        max-height: 50vh;
+      #slider-wrapper1 {
+        max-width: 350px;
+        max-height: 350px;
         overflow-x: hidden;
-        overflow-y: visible;
+        overflow-y: hidden;
+      }
+      #slider-wrapper1 {
+        max-width: 200px;
+        max-height: 205px;
+        overflow-x: hidden;
+        overflow-y: hidden;
       }
       .hidden {
         display: none;
       }
       .active {
-        transform: translateX(50vw);
+        animation-name: activeAnim;
+        animation-duration: 1.25s;
+        animation-fill-mode: forwards;
+        position: absolute;
+        animation-timing-function: linear;
+        /* transform: translateX(50vw);
         transition: 1.5s;
         position: relative;
         left: -50vw;
         top: 0;
-        z-index: 100;
+        z-index: 100;*/
       }
       .hiddenByAnimation {
+        animation-name: hiddenAnim;
+        animation-duration: 1.25s;
+        animation-fill-mode: forwards;
         position: relative;
+        animation-timing-function: linear;
+        /*position: relative;
         transform: translateX(50vw);
         transition: 1.5s;
-        z-index: -100;
+        z-index: -100;*/
+      }
+
+      @keyframes activeAnim {
+        0% {
+          left: -200px;
+          top: 0px;
+        }
+        100% {
+          left: 0;
+          top: 0px;
+        }
+      }
+
+      @keyframes hiddenAnim {
+        0% {
+          left: 0px;
+          top: 0px;
+        }
+        100% {
+          left: 200px;
+          top: 0px;
+          display: none;
+        }
       }
     </style>
   </head>
   <body>
-    <div id="slider-wrapper">
-      <img
-        class="slider-element active"
-        id="0"
-        src="https://via.placeholder.com/150/92c952"
-      />
-      <img
-        class="slider-element hidden"
-        id="1"
-        src="https://via.placeholder.com/150/fd5751"
-      />
-      <img
-        class="slider-element hidden"
-        id="2"
-        src="https://via.placeholder.com/150/75334a"
-      />
+    <div id="slider-wrapper1">
+      <div id="slider-wrapper2">
+        <img
+          class="slider-element active"
+          id="0"
+          src="https://via.placeholder.com/150/92c952"
+        />
+        <img
+          class="slider-element hidden"
+          id="1"
+          src="https://via.placeholder.com/150/fd5751"
+        />
+        <img
+          class="slider-element hidden"
+          id="2"
+          src="https://via.placeholder.com/150/75334a"
+        />
+      </div>
     </div>
     <script src="./script.js"></script>
   </body>
