@@ -16,14 +16,8 @@
         overflow-x: hidden;
       }
       #slider-wrapper1 {
-        max-width: 350px;
-        max-height: 350px;
-        overflow-x: hidden;
-        overflow-y: hidden;
-      }
-      #slider-wrapper1 {
         max-width: 200px;
-        max-height: 205px;
+        max-height: 200px;
         overflow-x: hidden;
         overflow-y: hidden;
       }
@@ -34,25 +28,15 @@
         animation-name: activeAnim;
         animation-duration: 1.25s;
         animation-fill-mode: forwards;
-        position: absolute;
         animation-timing-function: linear;
-        /* transform: translateX(50vw);
-        transition: 1.5s;
-        position: relative;
-        left: -50vw;
-        top: 0;
-        z-index: 100;*/
+        position: absolute;
       }
       .hiddenByAnimation {
         animation-name: hiddenAnim;
         animation-duration: 1.25s;
         animation-fill-mode: forwards;
-        position: relative;
         animation-timing-function: linear;
-        /*position: relative;
-        transform: translateX(50vw);
-        transition: 1.5s;
-        z-index: -100;*/
+        position: relative;
       }
 
       @keyframes activeAnim {
@@ -81,23 +65,28 @@
   </head>
   <body>
     <div id="slider-wrapper1">
-      <div id="slider-wrapper2">
-        <img
-          class="slider-element active"
-          id="0"
-          src="https://via.placeholder.com/150/92c952"
-        />
-        <img
-          class="slider-element hidden"
-          id="1"
-          src="https://via.placeholder.com/150/fd5751"
-        />
-        <img
-          class="slider-element hidden"
-          id="2"
-          src="https://via.placeholder.com/150/75334a"
-        />
-      </div>
+      <img
+        class="slider-element active"
+        id="0"
+        src="https://via.placeholder.com/150/92c952"
+      />
+      <img
+        class="slider-element hidden"
+        id="1"
+        src="https://via.placeholder.com/150/fd5751"
+      />
+      <img
+        class="slider-element hidden"
+        id="2"
+        src="https://via.placeholder.com/150/75334a"
+      />
+    </div>
+    <div style="position: absolute; top: 205px">
+      <button><</button>
+      <button>1</button>
+      <button>2</button>
+      <button>3</button>
+      <button>></button>
     </div>
     <script src="./script.js"></script>
   </body>
