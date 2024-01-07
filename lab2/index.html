@@ -9,15 +9,25 @@
         margin: 0;
         padding: 0;
       }
+      body {
+        padding: 200px;
+      }
       img {
         width: 200px;
         height: 200px;
         display: inline-block;
-        overflow-x: hidden;
+      }
+      .slider-element {
+        width: 200px;
+        height: 200px;
+        display: inline-block;
       }
       #slider-wrapper1 {
         max-width: 200px;
-        max-height: 200px;
+        max-height: 600px;
+        height: 200px;
+        width: 200px;
+        position: relative;
         overflow-x: hidden;
         overflow-y: hidden;
       }
@@ -36,7 +46,7 @@
         animation-duration: 1.25s;
         animation-fill-mode: forwards;
         animation-timing-function: linear;
-        position: relative;
+        position: absolute;
       }
 
       @keyframes activeAnim {
@@ -45,7 +55,7 @@
           top: 0px;
         }
         100% {
-          left: 0;
+          left: 0px;
           top: 0px;
         }
       }
@@ -64,29 +74,26 @@
     </style>
   </head>
   <body>
-    <div id="slider-wrapper1">
-      <img
-        class="slider-element active"
-        id="0"
-        src="https://via.placeholder.com/150/92c952"
-      />
-      <img
-        class="slider-element hidden"
-        id="1"
-        src="https://via.placeholder.com/150/fd5751"
-      />
-      <img
-        class="slider-element hidden"
-        id="2"
-        src="https://via.placeholder.com/150/75334a"
-      />
+    <div id="hide">
+      <div id="slider-wrapper1">
+        <div class="slider-element active" id="0">
+          <img src="https://via.placeholder.com/150/92c952" />
+        </div>
+        <div class="slider-element hidden" id="1">
+          <img src="https://via.placeholder.com/150/fd5751" />
+        </div>
+        <div class="slider-element hidden" id="2">
+          <img src="https://via.placeholder.com/150/75334a" />
+        </div>
+      </div>
     </div>
-    <div style="position: absolute; top: 205px">
+
+    <div style="position: absolute; top: 405px">
       <button><</button>
       <button>1</button>
       <button>2</button>
       <button>3</button>
-      <button>></button>
+      <button onclick="nextSlide()">></button>
     </div>
     <script src="./script.js"></script>
   </body>
