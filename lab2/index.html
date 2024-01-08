@@ -15,7 +15,6 @@
       img {
         width: 200px;
         height: 200px;
-        display: inline-block;
       }
       .slider-element {
         width: 200px;
@@ -23,8 +22,6 @@
         display: inline-block;
       }
       #slider-wrapper1 {
-        max-width: 200px;
-        max-height: 600px;
         height: 200px;
         width: 200px;
         position: relative;
@@ -43,6 +40,21 @@
       }
       .hiddenByAnimation {
         animation-name: hiddenAnim;
+        animation-duration: 1.25s;
+        animation-fill-mode: forwards;
+        animation-timing-function: linear;
+        position: absolute;
+      }
+
+      .activeReverse {
+        animation-name: activeReverseAnim;
+        animation-duration: 1.25s;
+        animation-fill-mode: forwards;
+        animation-timing-function: linear;
+        position: absolute;
+      }
+      .hiddenByAnimationReverse {
+        animation-name: hiddenReverseAnim;
         animation-duration: 1.25s;
         animation-fill-mode: forwards;
         animation-timing-function: linear;
@@ -71,29 +83,50 @@
           display: none;
         }
       }
+
+      @keyframes activeReverseAnim {
+        0% {
+          left: 200px;
+          top: 0px;
+        }
+        100% {
+          left: 0px;
+          top: 0px;
+        }
+      }
+
+      @keyframes hiddenReverseAnim {
+        0% {
+          left: 0px;
+          top: 0px;
+        }
+        100% {
+          left: -200px;
+          top: 0px;
+          display: none;
+        }
+      }
     </style>
   </head>
   <body>
-    <div id="hide">
-      <div id="slider-wrapper1">
-        <div class="slider-element active" id="0">
-          <img src="https://via.placeholder.com/150/92c952" />
-        </div>
-        <div class="slider-element hidden" id="1">
-          <img src="https://via.placeholder.com/150/fd5751" />
-        </div>
-        <div class="slider-element hidden" id="2">
-          <img src="https://via.placeholder.com/150/75334a" />
-        </div>
+    <div id="slider-wrapper1">
+      <div class="slider-element active" id="0">
+        <img src="https://via.placeholder.com/150/92c952" />
+      </div>
+      <div class="slider-element hidden" id="1">
+        <img src="https://via.placeholder.com/150/fd5751" />
+      </div>
+      <div class="slider-element hidden" id="2">
+        <img src="https://via.placeholder.com/150/75334a" />
       </div>
     </div>
 
     <div style="position: absolute; top: 405px">
-      <button><</button>
+      <button id="btnPrev"><</button>
       <button>1</button>
       <button>2</button>
       <button>3</button>
-      <button onclick="nextSlide()">></button>
+      <button id="btnNext">></button>
     </div>
     <script src="./script.js"></script>
   </body>
