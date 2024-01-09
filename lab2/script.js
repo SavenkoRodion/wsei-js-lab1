@@ -6,28 +6,52 @@ const getSilderElements = () =>
 let allSliderElements = getSilderElements();
 
 let activeSlide = document.querySelector(".active");
-const nextButton = document.querySelector("#btnNext");
-const prevButton = document.querySelector("#btnPrev");
+const btnNext = document.querySelector("#btnNext");
+const btnPrev = document.querySelector("#btnPrev");
+const btnOne = document.querySelector("#btnOne");
+const btnTwo = document.querySelector("#btnTwo");
+const btnThree = document.querySelector("#btnThree");
+const btnPause = document.querySelector("#btnPause");
+const btnPlay = document.querySelector("#btnPlay");
+
+const addButtonEventListeners = () => {
+  btnNext.addEventListener("click", btnNextLogic);
+  btnPrev.addEventListener("click", btnPrevLogic);
+  btnOne.addEventListener("click", btnOneLogic);
+  btnTwo.addEventListener("click", btnTwoLogic);
+  btnThree.addEventListener("click", btnThreeLogic);
+  btnPause.addEventListener("click", btnPauseLogic);
+  btnPlay.addEventListener("click", btnPlayLogic);
+};
+
+const removeButtonEventListeners = () => {
+  btnNext.removeEventListener("click", btnNextLogic);
+  btnPrev.removeEventListener("click", btnPrevLogic);
+  btnOne.removeEventListener("click", btnOneLogic);
+  btnTwo.removeEventListener("click", btnTwoLogic);
+  btnThree.removeEventListener("click", btnThreeLogic);
+  btnPause.removeEventListener("click", btnPauseLogic);
+  btnPlay.removeEventListener("click", btnPlayLogic);
+};
+
 activeSlide.addEventListener("animationend", () => {
-  nextButton.addEventListener("click", nameMeLater);
-  prevButton.addEventListener("click", nameMeLater2);
+  addButtonEventListeners();
 });
+
 let nextSlideId = 0;
 
 const hideElementLogic = () => {
   activeSlide.classList.remove("active");
   activeSlide.classList.remove("activeReverse");
   activeSlide.classList.add("hiddenByAnimation");
-  nextButton.removeEventListener("click", nameMeLater);
-  prevButton.removeEventListener("click", nameMeLater2);
+  removeButtonEventListeners();
 };
 
 const hideReverseElementLogic = () => {
   activeSlide.classList.remove("active");
   activeSlide.classList.remove("activeReverse");
   activeSlide.classList.add("hiddenByAnimationReverse");
-  nextButton.removeEventListener("click", nameMeLater);
-  prevButton.removeEventListener("click", nameMeLater2);
+  removeButtonEventListeners();
 };
 
 const activateElementLogic = () => {
@@ -37,8 +61,7 @@ const activateElementLogic = () => {
   allSliderElements[nextSlideId].classList.remove("hiddenByAnimation");
   allSliderElements[nextSlideId].classList.remove("hidden");
   allSliderElements[nextSlideId].addEventListener("animationend", () => {
-    nextButton.addEventListener("click", nameMeLater);
-    prevButton.addEventListener("click", nameMeLater2);
+    addButtonEventListeners();
   });
 };
 
@@ -48,14 +71,22 @@ const activateReverseElementLogic = () => {
   allSliderElements[nextSlideId].classList.remove("hiddenByAnimation");
   allSliderElements[nextSlideId].classList.remove("hidden");
   allSliderElements[nextSlideId].addEventListener("animationend", () => {
-    nextButton.addEventListener("click", nameMeLater);
-    prevButton.addEventListener("click", nameMeLater2);
+    addButtonEventListeners();
   });
 };
 
 const sliderChangeAnimationLogic = () => {
   hideElementLogic();
   nextSlideId = parseInt(activeSlide.id) + 1;
+  if (nextSlideId >= allSliderElements.length) nextSlideId = 0;
+  activateElementLogic();
+
+  activeSlide = document.querySelector(".active");
+};
+
+const sliderDirectChange = (id) => {
+  hideElementLogic();
+  nextSlideId = id;
   if (nextSlideId >= allSliderElements.length) nextSlideId = 0;
   activateElementLogic();
 
@@ -76,14 +107,14 @@ let silderChangeInterval = setInterval(() => {
   sliderChangeAnimationLogic();
 }, timeoutInMs);
 
-const nameMeLater = () => {
+const btnNextLogic = () => {
   clearInterval(silderChangeInterval);
   sliderChangeAnimationLogic();
   silderChangeInterval = setInterval(() => {
     sliderChangeAnimationLogic();
   }, timeoutInMs);
 };
-const nameMeLater2 = () => {
+const btnPrevLogic = () => {
   console.log("here");
   clearInterval(silderChangeInterval);
   sliderChangeAnimationLogicReverse();
@@ -92,10 +123,57 @@ const nameMeLater2 = () => {
   }, timeoutInMs);
 };
 
-const nextSlide = () => {
-  console.log("lol");
+const btnOneLogic = () => {
+  this.sliderId = 0;
+  clearInterval(silderChangeInterval);
+  if (parseInt(activeSlide.id) === this.sliderId) {
+    silderChangeInterval = setInterval(() => {
+      sliderChangeAnimationLogic();
+    }, timeoutInMs);
+    return;
+  }
+  sliderDirectChange(this.sliderId);
+  silderChangeInterval = setInterval(() => {
+    sliderChangeAnimationLogic();
+  }, timeoutInMs);
 };
 
-// Reverse animation + fix mix with absolute and relative
-// One step next/prev
-//
+const btnTwoLogic = () => {
+  this.sliderId = 1;
+  clearInterval(silderChangeInterval);
+  if (parseInt(activeSlide.id) === this.sliderId) {
+    silderChangeInterval = setInterval(() => {
+      sliderChangeAnimationLogic();
+    }, timeoutInMs);
+    return;
+  }
+  sliderDirectChange(this.sliderId);
+  silderChangeInterval = setInterval(() => {
+    sliderChangeAnimationLogic();
+  }, timeoutInMs);
+};
+
+const btnThreeLogic = () => {
+  this.sliderId = 2;
+  clearInterval(silderChangeInterval);
+  if (parseInt(activeSlide.id) === this.sliderId) {
+    silderChangeInterval = setInterval(() => {
+      sliderChangeAnimationLogic();
+    }, timeoutInMs);
+    return;
+  }
+  sliderDirectChange(this.sliderId);
+  silderChangeInterval = setInterval(() => {
+    sliderChangeAnimationLogic();
+  }, timeoutInMs);
+};
+
+const btnPauseLogic = () => {
+  clearInterval(silderChangeInterval);
+};
+
+const btnPlayLogic = () => {
+  silderChangeInterval = setInterval(() => {
+    sliderChangeAnimationLogic();
+  }, timeoutInMs);
+};
