@@ -1,77 +1,79 @@
 console.log("hello");
 
 const mainSound = document.querySelector("#mainSound1");
-const domChannel1 = document.querySelector("#channel1");
-
+const soundWrapper = [
+  ...document.querySelector("#soundWrapper").childNodes,
+].filter((e) => e.src);
+//console.log(soundWrapper.childNodes.forEach((e) => e));
+// const lol = [...domChannel1.childNodes]
+//   .filter((e) => e.src)
+//   .map((e) => e.src.split("/").pop());
+// console.log("array", lol);
+let lol = new Date();
 const globalArray = [];
 
 //To remove, setTimeout will stop
 
 mainSound.addEventListener("loadedmetadata", function () {
-  domChannel1.addEventListener("keypress", (e) => {});
+  //soundWrapper.addEventListener("keypress", (e) => {});
   document.addEventListener("keypress", logKey);
 });
 
 class Sound {
-  constructor(source, startDate, maxDuration) {
+  constructor(source) {
     this.source = source;
-    this.startDate = startDate;
-    this.maxDuration = maxDuration;
-    this.actualDuration = null;
+    this.duration = null;
   }
+  setDuration = (duration) => {
+    this.duration = duration;
+  };
 }
 
-const playSound = (source) => {
-  //mainSound.src = source;
-  console.log(mainSound.src);
-  mainSound.currentTime = 0;
-  globalArray.push(new Sound(mainSound.src, Date.now(), mainSound.duration));
-  mainSound.play();
-  if (globalArray.length > 1) {
-    globalArray.at(-2).actualDuration =
-      (globalArray.at(-1).startDate - globalArray.at(-2).startDate) / 1000 >
-      globalArray.at(-2).maxDuration
-        ? globalArray.at(-2).maxDuration
-        : (globalArray.at(-1).startDate - globalArray.at(-2).startDate) / 1000;
-    console.log(...globalArray);
-  }
+const playSound = (soundId) => {
+  soundWrapper[soundId].play();
+  //object should have : or = ?
+  let timestamp = (new Date() - lol) / 1000;
+  globalArray.push({ timestamp: timestamp, soundId: soundId });
+  console.log(globalArray);
+  // mainSound.src = source;
+  // mainSound.currentTime = 0;
+  // globalArray.push(new Sound(mainSound.src));
+  // mainSound.play();
+  // if (globalArray.length > 1) {
+  //   globalArray.at(-2).actualDuration =
+  //     (globalArray.at(-1).startDate - globalArray.at(-2).startDate) / 1000 >
+  //     globalArray.at(-2).maxDuration
+  //       ? globalArray.at(-2).maxDuration
+  //       : (globalArray.at(-1).startDate - globalArray.at(-2).startDate) / 1000;
+  //   console.log(...globalArray);
+  // }
 };
 
 function logKey(e) {
   switch (e.key) {
     case "q":
-      playSound("./sounds/boom.wav");
+      playSound(0);
       break;
     case "w":
-      playSound("./sounds/clap.wav");
+      playSound(1);
       break;
     case "e":
-      playSound("./sounds/hihat.wav");
+      playSound(2);
       break;
     case "r":
-      mainSound.src = "./sounds/kick.wav";
-      mainSound.currentTime = 0;
-      mainSound.play();
+      playSound(3);
       break;
     case "t":
-      mainSound.src = "./sounds/openhat.wav";
-      mainSound.currentTime = 0;
-      mainSound.play();
+      playSound(4);
       break;
     case "y":
-      mainSound.src = "./sounds/ride.wav";
-      mainSound.currentTime = 0;
-      mainSound.play();
+      playSound(5);
       break;
     case "u":
-      mainSound.src = "./sounds/snare.wav";
-      mainSound.currentTime = 0;
-      mainSound.play();
+      playSound(6);
       break;
     case "i":
-      mainSound.src = "./sounds/tink.wav";
-      mainSound.currentTime = 0;
-      mainSound.play();
+      playSound(7);
       break;
     case "o":
       mainSound.src = "./sounds/tom.wav";
@@ -80,3 +82,5 @@ function logKey(e) {
       break;
   }
 }
+
+//co powinno być z dzwiękiem wielokrotnie klikanym?

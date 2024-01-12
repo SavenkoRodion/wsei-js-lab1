@@ -1,21 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Lab3</title>
-</head>
-<body>
+  </head>
+  <body>
     <h1>Lab3 - drumkit (controll by query)</h1>
     <button id="channel1">Record on channel 1</button>
-    <audio id="mainSound1" preload="metadata" src="./sounds/boom.wav"></audio>
-    <audio id="mainSound2" preload="metadata" ></audio>
-    <audio id="mainSound3" preload="metadata" ></audio>
-    <audio id="mainSound4" preload="metadata" ></audio>
-    <audio id="mainSound5" preload="metadata" ></audio>
-    <audio id="mainSound6" preload="metadata" ></audio>
-    <audio id="mainSound7" preload="metadata" ></audio>
-    <audio id="mainSound8" preload="metadata" ></audio>
+    <div id="soundWrapper">
+      <audio id="mainSound1" preload="metadata" src="./sounds/boom.wav"></audio>
+      <audio id="mainSound2" preload="metadata" src="./sounds/clap.wav"></audio>
+      <audio
+        id="mainSound3"
+        preload="metadata"
+        src="./sounds/hihat.wav"
+      ></audio>
+      <audio id="mainSound4" preload="metadata" src="./sounds/kick.wav"></audio>
+      <audio
+        id="mainSound5"
+        preload="metadata"
+        src="./sounds/openhat.wav"
+      ></audio>
+      <audio id="mainSound6" preload="metadata" src="./sounds/ride.wav"></audio>
+      <audio
+        id="mainSound7"
+        preload="metadata"
+        src="./sounds/snare.wav"
+      ></audio>
+      <audio id="mainSound8" preload="metadata" src="./sounds/tom.wav"></audio>
+    </div>
+
     <script src="./script.js"></script>
-</body>
+  </body>
 </html>
