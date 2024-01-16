@@ -1,5 +1,3 @@
-console.log("hello");
-
 const calculateButton = document.querySelector("#calculate");
 const addInputButton = document.querySelector("#add-input");
 const sumOutput = document.querySelector("#sum");
@@ -72,7 +70,6 @@ const createNewRow = () => {
 
   row.appendChild(getRemoveInputButton());
   row.appendChild(getNewInput());
-  row.appendChild(document.createElement("br"));
 
   inputContainer.appendChild(row);
   inputArray = getInputArray();
@@ -81,7 +78,6 @@ const createNewRow = () => {
 };
 
 const removeRow = (element) => {
-  console.log(element.parentElement);
   inputContainer.removeChild(element.parentElement);
 
   inputArray = getInputArray();
