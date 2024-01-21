@@ -107,25 +107,6 @@ console.log("hello");
 //   o: "./sounds/tom.wav",
 // };
 
-const keySoundPairs = {
-  q: new Audio("./sounds/boom.wav"),
-  w: new Audio("./sounds/clap.wav"),
-  e: new Audio("./sounds/hihat.wav"),
-  r: new Audio("./sounds/kick.wav"),
-  t: new Audio("./sounds/openhat.wav"),
-  y: new Audio("./sounds/ride.wav"),
-  u: new Audio("./sounds/snare.wav"),
-  i: new Audio("./sounds/tink.wav"),
-  o: new Audio("./sounds/tom.wav"),
-};
-
-function logKey(e) {
-  console.log(e.key, keySoundPairs[e.key]);
-  keySoundPairs[e.key].play();
-}
-
-document.addEventListener("keypress", logKey);
-
 const channels = document.querySelectorAll(".channel-record");
 const channelsRunners = document.querySelectorAll(".channel-run");
 
@@ -134,6 +115,8 @@ const recordingObjects = [];
 class RecordingObject {
   constructor() {
     this.IsOn = false;
+    this.Recording = [];
+    this.StartDate = null;
   }
 }
 
@@ -150,6 +133,7 @@ const recordingLogic = (e, i) => {
   this.recordingObject = getRecordingObject(i);
   if (!this.recordingObject.IsOn) {
     this.recordingObject.IsOn = true;
+    this.recordingObject.StartDate = new Date();
     //document.addEventListener("keypress", logKey);
     console.log(this.recordingObject.IsOn);
   } else {
@@ -170,3 +154,36 @@ channels.forEach((e, i) => {
     recordingLogic(e, i);
   });
 });
+
+const keySoundPairs = {
+  q: new Audio("./sounds/boom.wav"),
+  w: new Audio("./sounds/clap.wav"),
+  e: new Audio("./sounds/hihat.wav"),
+  r: new Audio("./sounds/kick.wav"),
+  t: new Audio("./sounds/openhat.wav"),
+  y: new Audio("./sounds/ride.wav"),
+  u: new Audio("./sounds/snare.wav"),
+  i: new Audio("./sounds/tink.wav"),
+  o: new Audio("./sounds/tom.wav"),
+};
+
+const logKey = (e) => {
+  console.log(e.key, keySoundPairs[e.key]);
+  keySoundPairs[e.key].play();
+
+  this.activeChannels = recordingObjects.filter((e) => {
+    return e.IsOn;
+  });
+
+  if (this.activeChannels.length) {
+    this.activeChannels.map((channel) => {
+      channel.Recording.push({
+        key: e.key,
+        date: new Date() - channel.StartDate,
+      });
+    });
+  }
+  console.log(recordingObjects);
+};
+
+document.addEventListener("keypress", logKey);
