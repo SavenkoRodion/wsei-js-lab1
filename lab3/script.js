@@ -95,21 +95,36 @@ console.log("hello");
 //   { o: "./sounds/tom.wav" },
 // ];
 
+// const keySoundPairs = {
+//   q: "./sounds/boom.wav",
+//   w: "./sounds/clap.wav",
+//   e: "./sounds/hihat.wav",
+//   r: "./sounds/kick.wav",
+//   t: "./sounds/openhat.wav",
+//   y: "./sounds/ride.wav",
+//   u: "./sounds/snare.wav",
+//   i: "./sounds/tink.wav",
+//   o: "./sounds/tom.wav",
+// };
+
 const keySoundPairs = {
-  q: "./sounds/boom.wav",
-  w: "./sounds/clap.wav",
-  e: "./sounds/hihat.wav",
-  r: "./sounds/kick.wav",
-  t: "./sounds/openhat.wav",
-  y: "./sounds/ride.wav",
-  u: "./sounds/snare.wav",
-  i: "./sounds/tink.wav",
-  o: "./sounds/tom.wav",
+  q: new Audio("./sounds/boom.wav"),
+  w: new Audio("./sounds/clap.wav"),
+  e: new Audio("./sounds/hihat.wav"),
+  r: new Audio("./sounds/kick.wav"),
+  t: new Audio("./sounds/openhat.wav"),
+  y: new Audio("./sounds/ride.wav"),
+  u: new Audio("./sounds/snare.wav"),
+  i: new Audio("./sounds/tink.wav"),
+  o: new Audio("./sounds/tom.wav"),
 };
 
 function logKey(e) {
   console.log(e.key, keySoundPairs[e.key]);
+  keySoundPairs[e.key].play();
 }
+
+document.addEventListener("keypress", logKey);
 
 const channels = document.querySelectorAll(".channel-record");
 const channelsRunners = document.querySelectorAll(".channel-run");
@@ -135,16 +150,17 @@ const recordingLogic = (e, i) => {
   this.recordingObject = getRecordingObject(i);
   if (!this.recordingObject.IsOn) {
     this.recordingObject.IsOn = true;
-    document.addEventListener("keypress", logKey);
+    //document.addEventListener("keypress", logKey);
     console.log(this.recordingObject.IsOn);
   } else {
     this.recordingObject.IsOn = false;
-    this.isThereNoChannelOn = !recordingObjects.filter((e) => {
-      return e.IsOn;
-    }).length;
-    if (this.isThereNoChannelOn) {
-      document.removeEventListener("keypress", logKey);
-    }
+    //   this.isThereNoChannelOn = !recordingObjects.filter((e) => {
+    //     return e.IsOn;
+    //   }).length;
+    //   if (this.isThereNoChannelOn) {
+    //     document.removeEventListener("keypress", logKey);
+    //   }
+    // }
   }
   return;
 };
