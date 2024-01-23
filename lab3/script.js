@@ -167,9 +167,14 @@ const keySoundPairs = {
   o: new Audio("./sounds/tom.wav"),
 };
 
+const getKeySoundPairs = () => {
+  return keySoundPairs;
+};
+
 const logKey = (e) => {
-  console.log(e.key, keySoundPairs[e.key]);
-  keySoundPairs[e.key].play();
+  this.keySoundPairs = { ...keySoundPairs };
+  this.keySoundPairs[e.key].currentTime = 0;
+  this.keySoundPairs[e.key].play();
 
   this.activeChannels = recordingObjects.filter((e) => {
     return e.IsOn;
@@ -187,3 +192,19 @@ const logKey = (e) => {
 };
 
 document.addEventListener("keypress", logKey);
+
+const playRecording = (i) => {
+  recordingObjects[i].Recording.map((e) =>
+    setTimeout(() => {
+      this.keySoundPairs = { ...keySoundPairs };
+      this.keySoundPairs[e.key].currentTime = 0;
+      this.keySoundPairs[e.key].play();
+    }, e.date)
+  );
+};
+
+channelsRunners.forEach((e, i) => {
+  e.addEventListener("click", () => {
+    playRecording(i);
+  });
+});
