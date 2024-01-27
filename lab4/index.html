@@ -14,6 +14,12 @@
         resize: none;
       }
 
+      #app-wrapper{
+        display:flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+      }
+
       .card {
         border: 1px solid black;
         width: min-content;
@@ -30,22 +36,19 @@
     <div id="app-wrapper">
       <div class="card">
         <div class="card-header">
-          <h1>sample card</h1>
+          <input value="sample card">
         </div>
         <div class="card-body">
-          <textarea></textarea>
-          <p>
-            Card textCard textCard textCard textCard textCard textCard textCard
-            text
-          </p>
+          <textarea value="Card textCard textCard textCard textCard textCard textCard textCard
+          text"></textarea>
         </div>
         <div class="card-footer">
           <button>Save</button>
           <button>Remove</button>
         </div>
       </div>
-      <button id="btn-create">Add card</button>
     </div>
+    <button id="btn-create">Add card</button>
     <script src="./script.js"></script>
   </body>
 </html>
