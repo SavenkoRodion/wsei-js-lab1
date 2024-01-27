@@ -32,7 +32,7 @@ const resetError = () => {
 const calculations = () => {
   const inputValues = inputArray.map((input) => parseFloat(input.value));
 
-  if (inputValues.includes(NaN)) {
+  if (inputValues.includes(NaN) || !inputValues.length) {
     setError();
 
     return;
