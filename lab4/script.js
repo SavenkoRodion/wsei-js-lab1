@@ -1,19 +1,10 @@
-console.log("Hello world");
+const cardsArray = [];
 
 const appWrapper = document.querySelector("#app-wrapper");
 
-const transformCard = (id) => {
-  //   const headerValue = document.querySelector(
-  //     `#card-${id} > .card-header > input`
-  //   ).value;
-  //   const textareaValue = document.querySelector(
-  //     `#card-${id} > .card-body > textarea`
-  //   ).value;
+const convertCardInputsIntoParagraphs = (id) => {
   const header = document.querySelector(`#card-${id} > .card-header`);
-  //.childNodes[0].value;
-  const body =
-    //.childNodes[0]
-    document.querySelector(`#card-${id} > .card-body`); //.value;
+  const body = document.querySelector(`#card-${id} > .card-body`);
 
   const newHeaderText = document.createElement("p");
   const newBodyText = document.createElement("p");
@@ -22,9 +13,22 @@ const transformCard = (id) => {
   newBodyText.innerHTML = header.childNodes[0].value;
 
   header.innerHTML = "";
-  header.appendChild(newHeaderText);
   body.innerHTML = "";
+
+  header.appendChild(newHeaderText);
   body.appendChild(newBodyText);
+};
+
+const replaceSaveBtnWithEditBtn = (id) => {
+  const footer = document.querySelector(`#card-${id} > .card-footer`);
+  const editButton = document.createElement("button");
+  editButton.innerHTML = "Edit";
+  footer.replaceChild(editButton, footer.childNodes[0]);
+};
+
+const transformCard = (id) => {
+  convertCardInputsIntoParagraphs(id);
+  replaceSaveBtnWithEditBtn(id);
 };
 
 class Card {
@@ -40,20 +44,18 @@ class Card {
     return this.#isSaved;
   };
 
-  changeCardState = () => {
+  saveCardData = () => {
     this.#isSaved = !this.#isSaved;
-    const thisCard = transformCard(this.id);
+    transformCard(this.id);
 
     return this.#isSaved;
   };
+
+  removeCard = () => {
+    appWrapper.removeChild(document.querySelector(`#card-${this.id}`));
+    cardsArray.splice(this.id, 1);
+  };
 }
-
-const cardsArray = [];
-
-const saveCardData = (id) => {
-  console.log("Card with id " + id + " is saved");
-  cardsArray[id].changeCardState();
-};
 
 const createCard = () => {
   const cardObject = new Card(cardsArray.length);
@@ -74,10 +76,14 @@ const createCard = () => {
   cardFooterWrapper.classList.add("card-footer");
 
   cardFooterSaveBtn.innerHTML = "Save";
-  cardFooterSaveBtn.addEventListener("click", () => {
-    saveCardData(cardObject.id);
-  });
   cardFooterRemoveBtn.innerHTML = "Remove";
+
+  cardFooterSaveBtn.addEventListener("click", () => {
+    cardObject.saveCardData();
+  });
+  cardFooterRemoveBtn.addEventListener("click", () => {
+    cardObject.removeCard();
+  });
 
   cardHeaderInput.required = true;
   cardBodyTextarea.required = true;
@@ -105,6 +111,3 @@ const createCard = () => {
 
 const btnCreate = document.querySelector("#btn-create");
 btnCreate.addEventListener("click", createCard);
-
-// const lol1 = createCard();
-// console.log(lol1)
