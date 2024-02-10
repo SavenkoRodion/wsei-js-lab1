@@ -13,7 +13,7 @@ const cardsArray = [];
 
 const getCardById = (id) => {
   if (!id && id !== 0) return null;
-  console.log(cardsArray);
+  cardsArray;
   return cardsArray.filter((e) => {
     return e.getCardId() === id;
   })[0];
@@ -109,12 +109,10 @@ const transformCardToEdit = (id) => {
     cardColorpickWrapper.appendChild(tempButton);
   });
   cardColorpickWrapper.classList.add("card-colorpick");
+  const footer = document.querySelector(`#card-${id} > .card-footer`);
   document
     .querySelector(`#card-${id}`)
-    .insertBefore(
-      cardColorpickWrapper,
-      document.querySelector(`#card-${id} > .card-footer > button`).slice(-1)[0]
-    );
+    .insertBefore(cardColorpickWrapper, footer);
 };
 
 class Card {
@@ -133,7 +131,7 @@ class Card {
   };
 
   getCardId = () => {
-    console.log(this.#id);
+    this.#id;
     return this.#id;
   };
 
@@ -158,11 +156,9 @@ class Card {
   };
 
   removeCard = () => {
-    console.log(
-      cardsArray.findIndex((e) => {
-        return e.id === this.#id;
-      })
-    );
+    cardsArray.findIndex((e) => {
+      return e.id === this.#id;
+    });
   };
 
   pinCard = () => {
@@ -170,21 +166,30 @@ class Card {
     const domCardFooter = document.querySelector(
       `#card-${this.#id} .card-footer`
     );
+    this.#id;
+    domCard;
+    cardsArray.findIndex((e) => {
+      e;
+      return e.getCardId() === this.#id;
+    });
     const unpinButton = document.createElement("button");
     unpinButton.innerHTML = "Unpin";
     unpinButton.addEventListener("click", this.unpinCard);
+    unpinButton.classList.add("card-btn-unpin");
     domCardFooter.replaceChild(
       unpinButton,
       document.querySelector(`#card-${this.#id} .card-btn-pin`)
     );
     appWrapper.removeChild(domCard);
     appWrapper.insertBefore(domCard, appWrapper.childNodes[0]);
+
     cardsArray.splice(
       cardsArray.findIndex((e) => {
-        return e.id === this.#id;
+        return e.getCardId() === this.#id;
       }),
       1
     );
+
     cardsArray.unshift(this);
     this.#isPinned = true;
   };
@@ -194,28 +199,36 @@ class Card {
     const domCardFooter = document.querySelector(
       `#card-${this.#id} .card-footer`
     );
-    const unpinButton = document.createElement("button");
-    unpinButton.innerHTML = "Unpin";
-    unpinButton.addEventListener("click", this.unpinCard);
+
+    const pinButton = document.createElement("button");
+    pinButton.innerHTML = "Pin";
+    pinButton.addEventListener("click", this.pinCard);
+    pinButton.classList.add("card-btn-pin");
+
     domCardFooter.replaceChild(
-      unpinButton,
-      document.querySelector(`#card-${this.#id} .card-btn-pin`)
+      pinButton,
+      document.querySelector(`#card-${this.#id} .card-btn-unpin`)
     );
     appWrapper.removeChild(domCard);
     appWrapper.insertBefore(domCard, appWrapper.childNodes[0]);
+
+    cardsArray;
+    this.#id = cardsArray.slice(-1)[0].getCardId() + 1;
     cardsArray.splice(
       cardsArray.findIndex((e) => {
         return e.id === this.#id;
       }),
       1
     );
-    cardsArray.unshift(this);
+    cardsArray.push(this);
     this.#isPinned = false;
+    domCard.id = `card-${this.#id}`;
+    cardsArray;
   };
 }
 
 const createCard = () => {
-  console.log(cardsArray.slice(-1));
+  cardsArray.slice(-1);
 
   const cardObject = new Card(
     cardsArray.length ? cardsArray.slice(-1)[0]?.getCardId() + 1 : 0
@@ -281,14 +294,10 @@ const createCard = () => {
   cardsArray.push(cardObject);
   appWrapper.appendChild(cardWrapper);
 
-  console.log(cardsArray);
+  cardsArray;
 
   return true;
 };
 
 const btnCreate = document.querySelector("#btn-create");
 btnCreate.addEventListener("click", createCard);
-
-//saving to localstorage
-//pin finish
-//generating from localstorage

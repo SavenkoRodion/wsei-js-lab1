@@ -55,7 +55,7 @@ const hideReverseElementLogic = () => {
 };
 
 const activateElementLogic = () => {
-  console.log(allSliderElements[nextSlideId]);
+  allSliderElements[nextSlideId];
   allSliderElements[nextSlideId].classList.add("active");
   allSliderElements[nextSlideId].classList.remove("hiddenByAnimationReverse");
   allSliderElements[nextSlideId].classList.remove("hiddenByAnimation");
@@ -96,7 +96,7 @@ const sliderDirectChange = (id) => {
 const sliderChangeAnimationLogicReverse = () => {
   hideReverseElementLogic();
   nextSlideId = parseInt(activeSlide.id) - 1;
-  console.log(allSliderElements.length);
+  allSliderElements.length;
   if (nextSlideId < 0) nextSlideId = allSliderElements.length - 1;
   activateReverseElementLogic();
 
@@ -115,7 +115,6 @@ const btnNextLogic = () => {
   }, timeoutInMs);
 };
 const btnPrevLogic = () => {
-  console.log("here");
   clearInterval(silderChangeInterval);
   sliderChangeAnimationLogicReverse();
   silderChangeInterval = setInterval(() => {
