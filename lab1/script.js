@@ -13,18 +13,18 @@ const getInputArray = () =>
 let inputArray = getInputArray();
 
 const setError = () => {
-  sumOutput.innerHTML = "";
-  minOutput.innerHTML = "";
-  maxOutput.innerHTML = "";
-  avgOutput.innerHTML = "";
+  sumOutput.textContent = "";
+  minOutput.textContent = "";
+  maxOutput.textContent = "";
+  avgOutput.textContent = "";
 
-  errorOutput.innerHTML = "Wypełnij poprawnie wszystkie pola";
+  errorOutput.textContent = "Wypełnij poprawnie wszystkie pola";
 
   return;
 };
 
 const resetError = () => {
-  errorOutput.innerHTML = "";
+  errorOutput.textContent = "";
 
   return;
 };
@@ -40,10 +40,10 @@ const calculations = () => {
 
   resetError();
 
-  sumOutput.innerHTML = inputValues.reduce((a, b) => a + b);
-  minOutput.innerHTML = Math.min(...inputValues);
-  maxOutput.innerHTML = Math.max(...inputValues);
-  avgOutput.innerHTML = inputValues.reduce((a, b) => a + b) / inputArray.length;
+  sumOutput.textContent = inputValues.reduce((a, b) => a + b);
+  minOutput.textContent = Math.min(...inputValues);
+  maxOutput.textContent = Math.max(...inputValues);
+  avgOutput.textContent = inputValues.reduce((a, b) => a + b) / inputArray.length;
 };
 
 const getNewInput = () => {
@@ -57,7 +57,7 @@ const getNewInput = () => {
 
 const getRemoveInputButton = () => {
   let newRemoveInputButton = document.createElement("button");
-  newRemoveInputButton.innerHTML = "-";
+  newRemoveInputButton.textContent = "-";
   newRemoveInputButton.addEventListener("click", () =>
     removeRow(newRemoveInputButton)
   );

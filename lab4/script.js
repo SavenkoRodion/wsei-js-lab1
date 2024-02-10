@@ -22,10 +22,9 @@ const getCardById = (id) => {
 };
 
 const saveToLocalstorage = () => {
-  localStorage.setItem("cardsArray", JSON.stringify(cardsArray.filter((e)=>{return e.isCardSaved()===true})));
-  console.log("TUTAJ")
-  console.log(JSON.stringify(cardsArray.filter((e)=>{return e.isCardSaved()===true})))
-  console.log(localStorage.getItem("cardsArray"))
+  localStorage.setItem("cardsArray", JSON.stringify(cardsArray.filter((e)=>{
+    e.publicID = e.getCardId();
+    return e.isCardSaved()===true})));
 }
 
 const colorPick = (id, color) => {
@@ -59,7 +58,7 @@ const convertCardParagraphsIntoInputs = (id) => {
   const body = document.querySelector(`#card-${id} > .card-body`);
 
   const newHeaderInput = document.createElement("input");
-  const newBodyInput = document.createElement("input");
+  const newBodyInput = document.createElement("textarea");
 
   newHeaderInput.value = header.childNodes[0].textContent;
   newBodyInput.value = body.childNodes[0].textContent;
@@ -138,6 +137,7 @@ class Card {
     this.header;
     this.body;
     this.color;
+    this.publicID;
   }
 
   isCardSaved = () => {
@@ -244,11 +244,16 @@ class Card {
   };
 }
 
-const createCard = () => {
-
-  const cardObject = new Card(
-    cardsArray.length ? cardsArray.slice(-1)[0]?.getCardId() + 1 : 0
-  );
+const createCard = (headerText="", bodyText="", color="", publicID = -1, isGenerating=false) => {
+  let cardObject;
+  if(publicID===-1){
+    cardObject = new Card(
+      cardsArray.length ? cardsArray.slice(-1)[0]?.getCardId() + 1 : 0
+    );
+  } else {
+    cardObject = new Card(publicID);
+  }
+  
 
   const cardWrapper = document.createElement("div");
   const cardHeaderWrapper = document.createElement("div");
@@ -292,6 +297,12 @@ const createCard = () => {
     cardObject.pinCard();
   });
 
+  if(isGenerating){
+    cardHeaderInput.value=headerText;
+    cardBodyTextarea.value=bodyText;
+    cardWrapper.style.backgroundColor=color;
+  }
+
   cardHeaderWrapper.appendChild(cardHeaderInput);
   cardBodyWrapper.appendChild(cardBodyTextarea);
   cardFooterWrapper.appendChild(cardFooterSaveBtn);
@@ -303,6 +314,7 @@ const createCard = () => {
     cardBodyWrapper,
     cardFooterWrapper
   );
+  
   cardWrapper.appendChild(cardBodyWrapper);
   cardWrapper.appendChild(cardColorpickWrapper);
   cardWrapper.appendChild(cardFooterWrapper);
@@ -311,9 +323,23 @@ const createCard = () => {
   appWrapper.appendChild(cardWrapper);
 
   cardsArray;
+  
+  console.log(cardsArray)
 
   return true;
 };
 
 const btnCreate = document.querySelector("#btn-create");
 btnCreate.addEventListener("click", createCard);
+
+const generateCardsFromStorage = ()=>{
+  const fromStorage = JSON.parse(localStorage.getItem("cardsArray"));
+  console.log(fromStorage)
+  if(fromStorage.length)
+  fromStorage.map((e)=>{
+    createCard(e.header, e.body, e.color, e.publicID, true)
+    getCardById(e.publicID).saveCardData();
+  })
+}
+
+window.addEventListener("load", generateCardsFromStorage);
