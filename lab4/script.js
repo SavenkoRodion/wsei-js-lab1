@@ -167,7 +167,7 @@ class Card {
     if (!this.#isSaved) return;
     this.#isSaved = !this.#isSaved;
     transformCardToEdit(this.#id);
-
+    saveToLocalstorage();
     return this.#isSaved;
   };
 
@@ -178,6 +178,8 @@ class Card {
 
     const domCard = document.querySelector(`#card-${this.#id}`);
     appWrapper.removeChild(domCard);
+    saveToLocalstorage();
+
   };
 
   pinCard = () => {
@@ -210,6 +212,7 @@ class Card {
 
     cardsArray.unshift(this);
     this.#isPinned = true;
+    saveToLocalstorage();
   };
 
   unpinCard = () => {
@@ -241,6 +244,7 @@ class Card {
     cardsArray.push(this);
     this.#isPinned = false;
     domCard.id = `card-${this.#id}`;
+    saveToLocalstorage();
   };
 }
 
