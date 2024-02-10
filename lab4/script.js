@@ -33,15 +33,15 @@ const convertCardInputsIntoParagraphs = (id) => {
   const newHeaderText = document.createElement("p");
   const newBodyText = document.createElement("p");
 
-  newHeaderText.innerHTML = header.childNodes[0].value;
-  newBodyText.innerHTML = body.childNodes[0].value;
+  newHeaderText.textContent = header.childNodes[0].value;
+  newBodyText.textContent = body.childNodes[0].value;
 
   const thisCard = getCardById(id);
   thisCard.header = header.childNodes[0].value;
   thisCard.body = body.childNodes[0].value;
 
-  header.innerHTML = "";
-  body.innerHTML = "";
+  header.textContent = "";
+  body.textContent = "";
 
   header.appendChild(newHeaderText);
   body.appendChild(newBodyText);
@@ -54,11 +54,11 @@ const convertCardParagraphsIntoInputs = (id) => {
   const newHeaderInput = document.createElement("input");
   const newBodyInput = document.createElement("input");
 
-  newHeaderInput.value = header.childNodes[0].innerHTML;
-  newBodyInput.value = body.childNodes[0].innerHTML;
+  newHeaderInput.value = header.childNodes[0].textContent;
+  newBodyInput.value = body.childNodes[0].textContent;
 
-  header.innerHTML = "";
-  body.innerHTML = "";
+  header.textContent = "";
+  body.textContent = "";
 
   header.appendChild(newHeaderInput);
   body.appendChild(newBodyInput);
@@ -67,7 +67,7 @@ const convertCardParagraphsIntoInputs = (id) => {
 const replaceSaveBtnWithEditBtn = (id) => {
   const footer = document.querySelector(`#card-${id} > .card-footer`);
   const editButton = document.createElement("button");
-  editButton.innerHTML = "Edit";
+  editButton.textContent = "Edit";
 
   editButton.addEventListener("click", () => {
     getCardById(id).editCardData();
@@ -79,7 +79,7 @@ const replaceSaveBtnWithEditBtn = (id) => {
 const replaceEditBtnWithSaveBtn = (id) => {
   const footer = document.querySelector(`#card-${id} > .card-footer`);
   const saveButton = document.createElement("button");
-  saveButton.innerHTML = "Save";
+  saveButton.textContent = "Save";
 
   saveButton.addEventListener("click", () => {
     getCardById(id).saveCardData();
@@ -156,9 +156,13 @@ class Card {
   };
 
   removeCard = () => {
-    cardsArray.findIndex((e) => {
-      return e.id === this.#id;
-    });
+    cardsArray.splice(cardsArray.findIndex((e) => {
+      return e.getCardId() === this.#id;
+    }), 1)
+
+    const domCard = document.querySelector(`#card-${this.#id}`);
+    appWrapper.removeChild(domCard);
+    console.log(cardsArray)
   };
 
   pinCard = () => {
@@ -173,7 +177,7 @@ class Card {
       return e.getCardId() === this.#id;
     });
     const unpinButton = document.createElement("button");
-    unpinButton.innerHTML = "Unpin";
+    unpinButton.textContent = "Unpin";
     unpinButton.addEventListener("click", this.unpinCard);
     unpinButton.classList.add("card-btn-unpin");
     domCardFooter.replaceChild(
@@ -201,7 +205,7 @@ class Card {
     );
 
     const pinButton = document.createElement("button");
-    pinButton.innerHTML = "Pin";
+    pinButton.textContent = "Pin";
     pinButton.addEventListener("click", this.pinCard);
     pinButton.classList.add("card-btn-pin");
 
@@ -262,9 +266,9 @@ const createCard = () => {
   cardFooterWrapper.classList.add("card-footer");
   cardPinBtn.classList.add("card-btn-pin");
 
-  cardFooterSaveBtn.innerHTML = "Save";
-  cardFooterRemoveBtn.innerHTML = "Remove";
-  cardPinBtn.innerHTML = "Pin";
+  cardFooterSaveBtn.textContent = "Save";
+  cardFooterRemoveBtn.textContent = "Remove";
+  cardPinBtn.textContent = "Pin";
 
   cardFooterSaveBtn.addEventListener("click", () => {
     cardObject.saveCardData();
