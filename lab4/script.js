@@ -1,3 +1,5 @@
+const appWrapper = document.querySelector("#app-wrapper");
+
 const cardColors = [
   "red",
   "orange",
@@ -19,7 +21,12 @@ const getCardById = (id) => {
   })[0];
 };
 
-const appWrapper = document.querySelector("#app-wrapper");
+const saveToLocalstorage = () => {
+  localStorage.setItem("cardsArray", JSON.stringify(cardsArray.filter((e)=>{return e.isCardSaved()===true})));
+  console.log("TUTAJ")
+  console.log(JSON.stringify(cardsArray.filter((e)=>{return e.isCardSaved()===true})))
+  console.log(localStorage.getItem("cardsArray"))
+}
 
 const colorPick = (id, color) => {
   const cardWrapper = document.querySelector(`#card-${id}`);
@@ -91,6 +98,12 @@ const replaceEditBtnWithSaveBtn = (id) => {
 const transformCardToSave = (id) => {
   convertCardInputsIntoParagraphs(id);
   replaceSaveBtnWithEditBtn(id);
+
+  const thisCard = getCardById(id);
+  thisCard.color = document.querySelector(`#card-${id}`).style.backgroundColor;
+  console.log(document.querySelector(`#card-${id}`).style.backgroundColor)
+
+
   const colorpicker = document.querySelector(`#card-${id} > .card-colorpick`);
   colorpicker.remove();
 };
@@ -124,6 +137,7 @@ class Card {
     this.#id = id;
     this.header;
     this.body;
+    this.color;
   }
 
   isCardSaved = () => {
@@ -144,6 +158,8 @@ class Card {
     this.#isSaved = true;
     transformCardToSave(this.#id);
 
+    saveToLocalstorage();
+
     return this.#isSaved;
   };
 
@@ -162,7 +178,6 @@ class Card {
 
     const domCard = document.querySelector(`#card-${this.#id}`);
     appWrapper.removeChild(domCard);
-    console.log(cardsArray)
   };
 
   pinCard = () => {
@@ -170,8 +185,7 @@ class Card {
     const domCardFooter = document.querySelector(
       `#card-${this.#id} .card-footer`
     );
-    this.#id;
-    domCard;
+    
     cardsArray.findIndex((e) => {
       e;
       return e.getCardId() === this.#id;
@@ -227,12 +241,10 @@ class Card {
     cardsArray.push(this);
     this.#isPinned = false;
     domCard.id = `card-${this.#id}`;
-    cardsArray;
   };
 }
 
 const createCard = () => {
-  cardsArray.slice(-1);
 
   const cardObject = new Card(
     cardsArray.length ? cardsArray.slice(-1)[0]?.getCardId() + 1 : 0
