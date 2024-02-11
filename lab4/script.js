@@ -22,10 +22,16 @@ const getCardById = (id) => {
 };
 
 const saveToLocalstorage = () => {
-  localStorage.setItem("cardsArray", JSON.stringify(cardsArray.filter((e)=>{
-    e.publicID = e.getCardId();
-    return e.isCardSaved()===true})));
-}
+  localStorage.setItem(
+    "cardsArray",
+    JSON.stringify(
+      cardsArray.filter((e) => {
+        e.publicID = e.getCardId();
+        return e.isCardSaved() === true;
+      })
+    )
+  );
+};
 
 const colorPick = (id, color) => {
   const cardWrapper = document.querySelector(`#card-${id}`);
@@ -100,8 +106,7 @@ const transformCardToSave = (id) => {
 
   const thisCard = getCardById(id);
   thisCard.color = document.querySelector(`#card-${id}`).style.backgroundColor;
-  console.log(document.querySelector(`#card-${id}`).style.backgroundColor)
-
+  console.log(document.querySelector(`#card-${id}`).style.backgroundColor);
 
   const colorpicker = document.querySelector(`#card-${id} > .card-colorpick`);
   colorpicker.remove();
@@ -138,6 +143,7 @@ class Card {
     this.body;
     this.color;
     this.publicID;
+    this.publicPin;
   }
 
   isCardSaved = () => {
@@ -172,14 +178,16 @@ class Card {
   };
 
   removeCard = () => {
-    cardsArray.splice(cardsArray.findIndex((e) => {
-      return e.getCardId() === this.#id;
-    }), 1)
+    cardsArray.splice(
+      cardsArray.findIndex((e) => {
+        return e.getCardId() === this.#id;
+      }),
+      1
+    );
 
     const domCard = document.querySelector(`#card-${this.#id}`);
     appWrapper.removeChild(domCard);
     saveToLocalstorage();
-
   };
 
   pinCard = () => {
@@ -187,7 +195,7 @@ class Card {
     const domCardFooter = document.querySelector(
       `#card-${this.#id} .card-footer`
     );
-    
+
     cardsArray.findIndex((e) => {
       e;
       return e.getCardId() === this.#id;
@@ -201,7 +209,7 @@ class Card {
       document.querySelector(`#card-${this.#id} .card-btn-pin`)
     );
     appWrapper.removeChild(domCard);
-    appWrapper.insertBefore(domCard, appWrapper.childNodes[0]);
+    document.querySelector("#pinned-cards").appendChild(domCard);
 
     cardsArray.splice(
       cardsArray.findIndex((e) => {
@@ -230,8 +238,8 @@ class Card {
       pinButton,
       document.querySelector(`#card-${this.#id} .card-btn-unpin`)
     );
-    appWrapper.removeChild(domCard);
-    appWrapper.insertBefore(domCard, appWrapper.childNodes[0]);
+    document.querySelector("#pinned-cards").removeChild(domCard);
+    appWrapper.appendChild(domCard);
 
     cardsArray;
     this.#id = cardsArray.slice(-1)[0].getCardId() + 1;
@@ -248,16 +256,23 @@ class Card {
   };
 }
 
-const createCard = (headerText="", bodyText="", color="", publicID = -1, isGenerating=false) => {
+const createCardHeader = () => {};
+
+const createCard = (
+  headerText = "",
+  bodyText = "",
+  color = "",
+  publicID = -1,
+  isGenerating = false
+) => {
   let cardObject;
-  if(publicID===-1){
+  if (publicID === -1) {
     cardObject = new Card(
       cardsArray.length ? cardsArray.slice(-1)[0]?.getCardId() + 1 : 0
     );
   } else {
     cardObject = new Card(publicID);
   }
-  
 
   const cardWrapper = document.createElement("div");
   const cardHeaderWrapper = document.createElement("div");
@@ -269,6 +284,7 @@ const createCard = (headerText="", bodyText="", color="", publicID = -1, isGener
   const cardFooterSaveBtn = document.createElement("button");
   const cardFooterRemoveBtn = document.createElement("button");
   const cardPinBtn = document.createElement("button");
+  const cardDatetimeWrapper = document.createElement("div");
 
   cardColors.map((e) => {
     let tempButton = document.createElement("button");
@@ -291,6 +307,10 @@ const createCard = (headerText="", bodyText="", color="", publicID = -1, isGener
   cardFooterRemoveBtn.textContent = "Remove";
   cardPinBtn.textContent = "Pin";
 
+  cardDatetimeWrapper.innerHTML = `Created: ${new Date().toLocaleDateString(
+    "en-GB"
+  )}`;
+
   cardFooterSaveBtn.addEventListener("click", () => {
     cardObject.saveCardData();
   });
@@ -301,10 +321,10 @@ const createCard = (headerText="", bodyText="", color="", publicID = -1, isGener
     cardObject.pinCard();
   });
 
-  if(isGenerating){
-    cardHeaderInput.value=headerText;
-    cardBodyTextarea.value=bodyText;
-    cardWrapper.style.backgroundColor=color;
+  if (isGenerating) {
+    cardHeaderInput.value = headerText;
+    cardBodyTextarea.value = bodyText;
+    cardWrapper.style.backgroundColor = color;
   }
 
   cardHeaderWrapper.appendChild(cardHeaderInput);
@@ -318,17 +338,18 @@ const createCard = (headerText="", bodyText="", color="", publicID = -1, isGener
     cardBodyWrapper,
     cardFooterWrapper
   );
-  
+
   cardWrapper.appendChild(cardBodyWrapper);
   cardWrapper.appendChild(cardColorpickWrapper);
   cardWrapper.appendChild(cardFooterWrapper);
+  cardWrapper.appendChild(cardDatetimeWrapper);
 
   cardsArray.push(cardObject);
   appWrapper.appendChild(cardWrapper);
 
   cardsArray;
-  
-  console.log(cardsArray)
+
+  console.log(cardsArray);
 
   return true;
 };
@@ -336,14 +357,19 @@ const createCard = (headerText="", bodyText="", color="", publicID = -1, isGener
 const btnCreate = document.querySelector("#btn-create");
 btnCreate.addEventListener("click", createCard);
 
-const generateCardsFromStorage = ()=>{
+const generateCardsFromStorage = () => {
   const fromStorage = JSON.parse(localStorage.getItem("cardsArray"));
-  console.log(fromStorage)
-  if(fromStorage.length)
-  fromStorage.map((e)=>{
-    createCard(e.header, e.body, e.color, e.publicID, true)
-    getCardById(e.publicID).saveCardData();
-  })
-}
+  console.log(fromStorage);
+  if (fromStorage.length)
+    fromStorage.map((e) => {
+      createCard(e.header, e.body, e.color, e.publicID, true);
+      getCardById(e.publicID).saveCardData();
+    });
+};
 
 window.addEventListener("load", generateCardsFromStorage);
+
+//data utworzena
+//zapis pinned notatek
+//debugowanie
+//poprawny zapis edited notatek
