@@ -361,10 +361,10 @@ const createCard = (localStorageCardObject, isGenerating = false) => {
   }
 
   const cardHeaderWrapper = isGenerating
-    ? createCardHeader(localStorageCardObject.headerText)
+    ? createCardHeader(localStorageCardObject.header)
     : createCardHeader();
   const cardBodyWrapper = isGenerating
-    ? createCardBody(localStorageCardObject.bodyText)
+    ? createCardBody(localStorageCardObject.body)
     : createCardBody();
 
   const cardColorpickWrapper = createCardColorpick(cardObject);
