@@ -27,6 +27,7 @@ const saveToLocalstorage = () => {
     JSON.stringify(
       cardsArray.filter((e) => {
         e.publicID = e.getCardId();
+        e.publicPin = e.isCardPinned();
         return e.isCardSaved() === true;
       })
     )
@@ -144,6 +145,7 @@ class Card {
     this.color;
     this.publicID;
     this.publicPin;
+    this.dateOfCreation;
   }
 
   isCardSaved = () => {
@@ -256,35 +258,63 @@ class Card {
   };
 }
 
-const createCardHeader = () => {};
-
-const createCard = (
-  headerText = "",
-  bodyText = "",
-  color = "",
-  publicID = -1,
-  isGenerating = false
-) => {
-  let cardObject;
-  if (publicID === -1) {
-    cardObject = new Card(
-      cardsArray.length ? cardsArray.slice(-1)[0]?.getCardId() + 1 : 0
-    );
-  } else {
-    cardObject = new Card(publicID);
-  }
-
-  const cardWrapper = document.createElement("div");
+const createCardHeader = (headerText = "") => {
   const cardHeaderWrapper = document.createElement("div");
-  const cardBodyWrapper = document.createElement("div");
-  const cardColorpickWrapper = document.createElement("div");
-  const cardFooterWrapper = document.createElement("div");
+  cardHeaderWrapper.classList.add("card-header");
+
   const cardHeaderInput = document.createElement("input");
+  if (headerText) cardHeaderInput.value = headerText;
+
+  cardHeaderWrapper.appendChild(cardHeaderInput);
+
+  return cardHeaderWrapper;
+};
+
+const createCardBody = (bodyText = "") => {
+  const cardBodyWrapper = document.createElement("div");
+  cardBodyWrapper.classList.add("card-body");
+
   const cardBodyTextarea = document.createElement("textarea");
+  if (bodyText) cardBodyTextarea.value = bodyText;
+
+  cardBodyWrapper.appendChild(cardBodyTextarea);
+
+  return cardBodyWrapper;
+};
+
+const createCardFooter = (cardObject) => {
+  const cardFooterWrapper = document.createElement("div");
+  cardFooterWrapper.classList.add("card-footer");
+
   const cardFooterSaveBtn = document.createElement("button");
+  cardFooterSaveBtn.textContent = "Save";
+  cardFooterSaveBtn.addEventListener("click", () => {
+    cardObject.saveCardData();
+  });
+
   const cardFooterRemoveBtn = document.createElement("button");
-  const cardPinBtn = document.createElement("button");
-  const cardDatetimeWrapper = document.createElement("div");
+  cardFooterRemoveBtn.textContent = "Remove";
+  cardFooterRemoveBtn.addEventListener("click", () => {
+    cardObject.removeCard();
+  });
+
+  const cardFooterPinBtn = document.createElement("button");
+  cardFooterPinBtn.textContent = "Pin";
+  cardFooterPinBtn.className = "card-btn-pin";
+  cardFooterPinBtn.addEventListener("click", () => {
+    cardObject.pinCard();
+  });
+
+  cardFooterWrapper.appendChild(cardFooterSaveBtn);
+  cardFooterWrapper.appendChild(cardFooterRemoveBtn);
+  cardFooterWrapper.appendChild(cardFooterPinBtn);
+
+  return cardFooterWrapper;
+};
+
+const createCardColorpick = (cardObject) => {
+  const cardColorpickWrapper = document.createElement("div");
+  cardColorpickWrapper.classList.add("card-colorpick");
 
   cardColors.map((e) => {
     let tempButton = document.createElement("button");
@@ -295,50 +325,53 @@ const createCard = (
     cardColorpickWrapper.appendChild(tempButton);
   });
 
-  cardWrapper.classList.add("card");
-  cardWrapper.id = `card-${cardObject.getCardId()}`;
-  cardHeaderWrapper.classList.add("card-header");
-  cardBodyWrapper.classList.add("card-body");
-  cardColorpickWrapper.classList.add("card-colorpick");
-  cardFooterWrapper.classList.add("card-footer");
-  cardPinBtn.classList.add("card-btn-pin");
+  return cardColorpickWrapper;
+};
 
-  cardFooterSaveBtn.textContent = "Save";
-  cardFooterRemoveBtn.textContent = "Remove";
-  cardPinBtn.textContent = "Pin";
+const createCardDate = (cardObject) => {
+  console.log(cardObject.dateOfCreation);
+  console.log(typeof cardObject.dateOfCreation);
+  if (!cardObject.dateOfCreation) cardObject.dateOfCreation = new Date();
 
-  cardDatetimeWrapper.innerHTML = `Created: ${new Date().toLocaleDateString(
+  const cardDatetimeWrapper = document.createElement("div");
+  cardDatetimeWrapper.innerHTML = `Created: ${cardObject.dateOfCreation.toLocaleDateString(
     "en-GB"
-  )}`;
+  )} ${cardObject.dateOfCreation.toLocaleTimeString("en-GB")}`;
 
-  cardFooterSaveBtn.addEventListener("click", () => {
-    cardObject.saveCardData();
-  });
-  cardFooterRemoveBtn.addEventListener("click", () => {
-    cardObject.removeCard();
-  });
-  cardPinBtn.addEventListener("click", () => {
-    cardObject.pinCard();
-  });
+  return cardDatetimeWrapper;
+};
 
-  if (isGenerating) {
-    cardHeaderInput.value = headerText;
-    cardBodyTextarea.value = bodyText;
-    cardWrapper.style.backgroundColor = color;
+const createCard = (localStorageCardObject, isGenerating = false) => {
+  let cardObject;
+  if (!isGenerating) {
+    cardObject = new Card(
+      cardsArray.length ? cardsArray.slice(-1)[0]?.getCardId() + 1 : 0
+    );
+  } else {
+    cardObject = new Card(localStorageCardObject.publicID);
   }
 
-  cardHeaderWrapper.appendChild(cardHeaderInput);
-  cardBodyWrapper.appendChild(cardBodyTextarea);
-  cardFooterWrapper.appendChild(cardFooterSaveBtn);
-  cardFooterWrapper.appendChild(cardFooterRemoveBtn);
-  cardFooterWrapper.appendChild(cardPinBtn);
+  const cardWrapper = document.createElement("div");
+  cardWrapper.classList.add("card");
+  cardWrapper.id = `card-${cardObject.getCardId()}`;
 
-  cardWrapper.appendChild(
-    cardHeaderWrapper,
-    cardBodyWrapper,
-    cardFooterWrapper
-  );
+  if (isGenerating) {
+    cardWrapper.style.backgroundColor = localStorageCardObject.color;
+    cardObject.dateOfCreation = new Date(localStorageCardObject.dateOfCreation);
+  }
 
+  const cardHeaderWrapper = isGenerating
+    ? createCardHeader(localStorageCardObject.headerText)
+    : createCardHeader();
+  const cardBodyWrapper = isGenerating
+    ? createCardBody(localStorageCardObject.bodyText)
+    : createCardBody();
+
+  const cardColorpickWrapper = createCardColorpick(cardObject);
+  const cardFooterWrapper = createCardFooter(cardObject);
+  const cardDatetimeWrapper = createCardDate(cardObject);
+
+  cardWrapper.appendChild(cardHeaderWrapper);
   cardWrapper.appendChild(cardBodyWrapper);
   cardWrapper.appendChild(cardColorpickWrapper);
   cardWrapper.appendChild(cardFooterWrapper);
@@ -362,14 +395,13 @@ const generateCardsFromStorage = () => {
   console.log(fromStorage);
   if (fromStorage.length)
     fromStorage.map((e) => {
-      createCard(e.header, e.body, e.color, e.publicID, true);
+      createCard(e, true);
       getCardById(e.publicID).saveCardData();
     });
 };
 
 window.addEventListener("load", generateCardsFromStorage);
 
-//data utworzena
 //zapis pinned notatek
 //debugowanie
 //poprawny zapis edited notatek
