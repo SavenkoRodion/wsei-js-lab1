@@ -188,7 +188,8 @@ class Card {
     );
 
     const domCard = document.querySelector(`#card-${this.#id}`);
-    appWrapper.removeChild(domCard);
+    if (!this.#isPinned) appWrapper.removeChild(domCard);
+    else document.querySelector("#pinned-cards").removeChild(domCard);
     saveToLocalstorage();
   };
 
@@ -198,10 +199,6 @@ class Card {
       `#card-${this.#id} .card-footer`
     );
 
-    cardsArray.findIndex((e) => {
-      e;
-      return e.getCardId() === this.#id;
-    });
     const unpinButton = document.createElement("button");
     unpinButton.textContent = "Unpin";
     unpinButton.addEventListener("click", this.unpinCard);
@@ -378,6 +375,7 @@ const createCard = (localStorageCardObject, isGenerating = false) => {
   cardWrapper.appendChild(cardDatetimeWrapper);
 
   cardsArray.push(cardObject);
+
   appWrapper.appendChild(cardWrapper);
 
   cardsArray;
@@ -397,11 +395,10 @@ const generateCardsFromStorage = () => {
     fromStorage.map((e) => {
       createCard(e, true);
       getCardById(e.publicID).saveCardData();
+      if (e.publicPin) getCardById(e.publicID).pinCard();
     });
 };
 
 window.addEventListener("load", generateCardsFromStorage);
 
-//zapis pinned notatek
-//debugowanie
-//poprawny zapis edited notatek
+//refactor
