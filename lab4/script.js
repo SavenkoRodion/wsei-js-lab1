@@ -25,11 +25,15 @@ const saveToLocalstorage = () => {
   localStorage.setItem(
     "cardsArray",
     JSON.stringify(
-      cardsArray.filter((e) => {
-        e.publicID = e.getCardId();
-        e.publicPin = e.isCardPinned();
-        return e.isCardSaved() === true;
-      })
+      cardsArray
+        .filter((e) => {
+          e.publicID = e.getCardId();
+          e.publicPin = e.isCardPinned();
+          return e.isCardSaved() === true;
+        })
+        .sort((a, b) => {
+          return a.getCardId() - b.getCardId();
+        })
     )
   );
 };
@@ -342,7 +346,14 @@ const createCard = (localStorageCardObject, isGenerating = false) => {
   let cardObject;
   if (!isGenerating) {
     cardObject = new Card(
-      cardsArray.length ? cardsArray.slice(-1)[0]?.getCardId() + 1 : 0
+      cardsArray.length
+        ? cardsArray
+            .sort((a, b) => {
+              return a.getCardId() - b.getCardId();
+            })
+            .slice(-1)[0]
+            ?.getCardId() + 1
+        : 0
     );
   } else {
     cardObject = new Card(localStorageCardObject.publicID);
