@@ -7,8 +7,8 @@ const ballsArray = [];
 
 class BallObject {
   constructor() {
-    this.width = (mainCanvas.width - 10) * Math.random() + 10;
-    this.height = (mainCanvas.height - 10) * Math.random() + 10;
+    this.width = (mainCanvas.width - 20) * Math.random() + 10;
+    this.height = (mainCanvas.height - 20) * Math.random() + 10;
     this.xSpeed = Math.random() < 0.5 ? -1 : 1;
     this.ySpeed = Math.random() < 0.5 ? -1 : 1;
   }
@@ -49,7 +49,7 @@ const lol = (time) => {
     e.draw();
     ballsArray.map((e2) => {
       const distance = Math.hypot(e.width - e2.width, e.height - e2.height);
-      if (distance < 100) {
+      if (distance < 50) {
         ctx.beginPath();
         ctx.moveTo(e.width, e.height);
         ctx.lineTo(e2.width, e2.height);
