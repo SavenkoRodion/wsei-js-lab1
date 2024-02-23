@@ -23,11 +23,16 @@ const getRecordingObject = (i) => {
 const recordingLogic = (e, i) => {
   this.recordingObject = getRecordingObject(i);
   if (!this.recordingObject.IsOn) {
+    this.recordingObject.Recording = [];
     this.recordingObject.IsOn = true;
     this.recordingObject.StartDate = new Date();
     this.recordingObject.IsOn;
+    e.textContent = `Stop recording`;
+    document.querySelector(`#run-${i}`).disabled = true;
   } else {
     this.recordingObject.IsOn = false;
+    e.textContent = `Record on channel ${i + 1}`;
+    document.querySelector(`#run-${i}`).disabled = false;
   }
   return;
 };
