@@ -11,17 +11,6 @@ const getWeatherIcon = (iconName) => {
   return icon;
 };
 
-const cardColors = [
-  "red",
-  "orange",
-  "yellow",
-  "green",
-  "aqua",
-  "violet",
-  "silver",
-  "white",
-];
-
 const cardsArray = [];
 
 const getDomCardById = (id) => {
@@ -38,118 +27,19 @@ const getCardById = (id) => {
 
 const saveToLocalstorage = () => {
   localStorage.setItem(
-    "cardsArray",
+    "weatherCardsArray",
     JSON.stringify(
       cardsArray
-        .filter((e) => {
+        .map((e) => {
           e.publicID = e.getCardId();
           e.publicPin = e.isCardPinned();
-          return e.isCardSaved() === true;
+          return e;
         })
         .sort((a, b) => {
           return a.getCardId() - b.getCardId();
         })
     )
   );
-};
-
-const colorPick = (id, color) => {
-  const cardWrapper = getDomCardById(id);
-  cardWrapper.style = `background-color:${color}`;
-};
-
-const convertCardInputsIntoParagraphs = (id) => {
-  const header = document.querySelector(`#card-${id} > .card-header`);
-  const body = document.querySelector(`#card-${id} > .card-body`);
-
-  const newHeaderText = document.createElement("p");
-  const newBodyText = document.createElement("p");
-
-  newHeaderText.textContent = header.childNodes[0].value;
-  newBodyText.textContent = body.childNodes[0].value;
-
-  const thisCard = getCardById(id);
-  thisCard.header = header.childNodes[0].value;
-  thisCard.body = body.childNodes[0].value;
-
-  header.textContent = "";
-  body.textContent = "";
-
-  header.appendChild(newHeaderText);
-  body.appendChild(newBodyText);
-};
-
-const convertCardParagraphsIntoInputs = (id) => {
-  const header = document.querySelector(`#card-${id} > .card-header`);
-  const body = document.querySelector(`#card-${id} > .card-body`);
-
-  const newHeaderInput = document.createElement("input");
-  const newBodyInput = document.createElement("textarea");
-
-  newHeaderInput.value = header.childNodes[0].textContent;
-  newBodyInput.value = body.childNodes[0].textContent;
-
-  header.textContent = "";
-  body.textContent = "";
-
-  header.appendChild(newHeaderInput);
-  body.appendChild(newBodyInput);
-};
-
-const replaceSaveBtnWithEditBtn = (id) => {
-  const footer = document.querySelector(`#card-${id} > .card-footer`);
-  const editButton = document.createElement("button");
-  editButton.textContent = "Edit";
-
-  editButton.addEventListener("click", () => {
-    getCardById(id).editCardData();
-  });
-
-  footer.replaceChild(editButton, footer.childNodes[0]);
-};
-
-const replaceEditBtnWithSaveBtn = (id) => {
-  const footer = document.querySelector(`#card-${id} > .card-footer`);
-  const saveButton = document.createElement("button");
-  saveButton.textContent = "Save";
-
-  saveButton.addEventListener("click", () => {
-    getCardById(id).saveCardData();
-  });
-
-  footer.replaceChild(saveButton, footer.childNodes[0]);
-};
-
-const transformCardToSave = (id) => {
-  convertCardInputsIntoParagraphs(id);
-  replaceSaveBtnWithEditBtn(id);
-
-  const thisCard = getCardById(id);
-  thisCard.color = getDomCardById(id).style.backgroundColor;
-  console.log(getDomCardById(id).style.backgroundColor);
-
-  const colorpicker = document.querySelector(`#card-${id} > .card-colorpick`);
-  colorpicker.remove();
-};
-
-const transformCardToEdit = (id) => {
-  convertCardParagraphsIntoInputs(id);
-  replaceEditBtnWithSaveBtn(id);
-
-  const cardColorpickWrapper = document.createElement("div");
-  cardColors.map((e) => {
-    let tempButton = document.createElement("button");
-    tempButton.style = `background-color: ${e}; padding: 15px; margin-left:5px`;
-    tempButton.addEventListener("click", () => {
-      colorPick(id, e);
-    });
-    cardColorpickWrapper.appendChild(tempButton);
-  });
-  cardColorpickWrapper.classList.add("card-colorpick");
-  const footer = document.querySelector(`#card-${id} > .card-footer`);
-  document
-    .querySelector(`#card-${id}`)
-    .insertBefore(cardColorpickWrapper, footer);
 };
 
 class Card {
@@ -159,9 +49,10 @@ class Card {
 
   constructor(id) {
     this.#id = id;
-    this.header;
-    this.body;
-    this.color;
+    this.city;
+    this.remperature;
+    this.humidity;
+    this.weatherIcon;
     this.publicID;
     this.publicPin;
     this.dateOfCreation;
@@ -178,24 +69,6 @@ class Card {
 
   isCardPinned = () => {
     return this.#isPinned;
-  };
-
-  saveCardData = () => {
-    if (this.#isSaved) return;
-    this.#isSaved = true;
-    transformCardToSave(this.#id);
-
-    saveToLocalstorage();
-
-    return this.#isSaved;
-  };
-
-  editCardData = () => {
-    if (!this.#isSaved) return;
-    this.#isSaved = !this.#isSaved;
-    transformCardToEdit(this.#id);
-    saveToLocalstorage();
-    return this.#isSaved;
   };
 
   removeCard = () => {
@@ -274,14 +147,14 @@ class Card {
   };
 }
 
-const createCardHeader = (headerText = "") => {
+const createCardHeader = (headerText) => {
   const cardHeaderWrapper = document.createElement("div");
   cardHeaderWrapper.classList.add("card-header");
 
-  const cardHeaderInput = document.createElement("input");
-  if (headerText) cardHeaderInput.value = headerText;
+  const cardHeader = document.createElement("h4");
+  if (headerText) cardHeader.textContent = headerText;
 
-  cardHeaderWrapper.appendChild(cardHeaderInput);
+  cardHeaderWrapper.appendChild(cardHeader);
 
   return cardHeaderWrapper;
 };
@@ -310,12 +183,6 @@ const createCardFooter = (cardObject) => {
   const cardFooterWrapper = document.createElement("div");
   cardFooterWrapper.classList.add("card-footer");
 
-  const cardFooterSaveBtn = document.createElement("button");
-  cardFooterSaveBtn.textContent = "Save";
-  cardFooterSaveBtn.addEventListener("click", () => {
-    cardObject.saveCardData();
-  });
-
   const cardFooterRemoveBtn = document.createElement("button");
   cardFooterRemoveBtn.textContent = "Remove";
   cardFooterRemoveBtn.addEventListener("click", () => {
@@ -329,32 +196,13 @@ const createCardFooter = (cardObject) => {
     cardObject.pinCard();
   });
 
-  cardFooterWrapper.appendChild(cardFooterSaveBtn);
   cardFooterWrapper.appendChild(cardFooterRemoveBtn);
   cardFooterWrapper.appendChild(cardFooterPinBtn);
 
   return cardFooterWrapper;
 };
 
-const createCardColorpick = (cardObject) => {
-  const cardColorpickWrapper = document.createElement("div");
-  cardColorpickWrapper.classList.add("card-colorpick");
-
-  cardColors.map((e) => {
-    let tempButton = document.createElement("button");
-    tempButton.style = `background-color: ${e}; padding: 15px; margin-left:5px`;
-    tempButton.addEventListener("click", () => {
-      colorPick(cardObject.getCardId(), e);
-    });
-    cardColorpickWrapper.appendChild(tempButton);
-  });
-
-  return cardColorpickWrapper;
-};
-
 const createCardDate = (cardObject) => {
-  console.log(cardObject.dateOfCreation);
-  console.log(typeof cardObject.dateOfCreation);
   if (!cardObject.dateOfCreation) cardObject.dateOfCreation = new Date();
 
   const cardDatetimeWrapper = document.createElement("div");
@@ -368,6 +216,11 @@ const createCardDate = (cardObject) => {
 const createCard = (cardDataObject, isGenerating = false) => {
   let cardObject;
   if (!isGenerating) {
+    if (cardsArray?.length === 10) {
+      citySearch.setCustomValidity("Max 10 cities allowed");
+      citySearch.reportValidity();
+      return;
+    }
     cardObject = new Card(
       cardsArray.length
         ? cardsArray
@@ -379,14 +232,13 @@ const createCard = (cardDataObject, isGenerating = false) => {
         : 0
     );
   } else {
-    cardObject = new Card(0); //localStorageCardObject.publicID
+    cardObject = new Card(cardDataObject.publicID);
   }
 
   const cardWrapper = document.createElement("div");
   cardWrapper.classList.add("card");
   cardWrapper.id = `card-${cardObject.getCardId()}`;
 
-  console.log(cardDataObject);
   const cardHeaderWrapper = createCardHeader(cardDataObject.name);
   const cardBodyWrapper = createCardBody(
     cardDataObject.main.temp,
@@ -394,13 +246,16 @@ const createCard = (cardDataObject, isGenerating = false) => {
     cardDataObject.weather[0].icon
   );
 
-  const cardColorpickWrapper = createCardColorpick(cardObject);
+  cardObject.city = cardDataObject.name;
+  cardObject.temperature = cardDataObject.main.temp;
+  cardObject.humidity = cardDataObject.main.humidity;
+  cardObject.weatherIcon = cardDataObject.weather[0].icon;
+
   const cardFooterWrapper = createCardFooter(cardObject);
   const cardDatetimeWrapper = createCardDate(cardObject);
 
   cardWrapper.appendChild(cardHeaderWrapper);
   cardWrapper.appendChild(cardBodyWrapper);
-  cardWrapper.appendChild(cardColorpickWrapper);
   cardWrapper.appendChild(cardFooterWrapper);
   cardWrapper.appendChild(cardDatetimeWrapper);
 
@@ -408,49 +263,42 @@ const createCard = (cardDataObject, isGenerating = false) => {
 
   appWrapper.appendChild(cardWrapper);
 
-  cardsArray;
-
-  console.log(cardsArray);
-
+  saveToLocalstorage();
   return true;
 };
 
-const tryToCreateACard = async (
-  localStorageCardObject,
-  isGenerating = true
-) => {
+const tryToCreateACard = async () => {
   if (!citySearch.value) {
     citySearch.reportValidity();
     return;
   }
 
-  let lol = await fetch(
+  const res = await fetch(
     `https://api.openweathermap.org/data/2.5/weather?q=${citySearch.value}&units=metric&appid=108dd9a67c96f23039937fe6f3c91963`
   );
-  let lol2 = await lol.json();
-  if (lol2.cod !== 200) {
-    console.log(lol2.cod);
+  let resData = await res.json();
+  if (resData.cod !== 200) {
     citySearch.setCustomValidity("City was not found");
     citySearch.reportValidity();
     return;
   }
-  createCard(lol2, isGenerating);
+  createCard(resData, false);
 };
 
 const btnCreate = document.querySelector("#btn-create");
 btnCreate.addEventListener("click", tryToCreateACard);
 
-const generateCardsFromStorage = () => {
-  const fromStorage = JSON.parse(localStorage.getItem("cardsArray"));
-  console.log(fromStorage);
-  if (fromStorage.length)
-    fromStorage.map((e) => {
-      createCard(e, true);
-      getCardById(e.publicID).saveCardData();
+const generateCardsFromStorage = async () => {
+  const fromStorage = JSON.parse(localStorage.getItem("weatherCardsArray"));
+  if (fromStorage?.length)
+    fromStorage.map(async (e) => {
+      const res = await fetch(
+        `https://api.openweathermap.org/data/2.5/weather?q=${e.city}&units=metric&appid=108dd9a67c96f23039937fe6f3c91963`
+      );
+      let resData = await res.json();
+      createCard(resData, true);
       if (e.publicPin) getCardById(e.publicID).pinCard();
     });
 };
 
 window.addEventListener("load", generateCardsFromStorage);
-
-//refactor
