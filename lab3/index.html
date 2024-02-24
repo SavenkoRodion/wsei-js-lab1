@@ -6,15 +6,19 @@
     <title>Lab3</title>
   </head>
   <body>
-    <h1>Lab3 - drumkit (controll by qwerty)</h1>
-    <button class="channel-record">Record on channel 1</button>
-    <button class="channel-run" id="run-0">Run channel 1</button>
-    <button class="channel-record">Record on channel 2</button>
-    <button class="channel-run" id="run-1">Run channel 2</button>
-    <button class="channel-record">Record on channel 3</button>
-    <button class="channel-run" id="run-2">Run channel 3</button>
-    <button class="channel-record">Record on channel 4</button>
-    <button class="channel-run" id="run-3">Run channel 4</button>
+    <div>
+      <h1>Lab3 - drumkit (controll by qwerty)</h1>
+      <label for="0">Channel 1:</label
+      ><input type="checkbox" name="channel" id="0" />
+      <label for="1">Channel 2:</label
+      ><input type="checkbox" name="channel" id="1" />
+      <label for="2">Channel 3:</label
+      ><input type="checkbox" name="channel" id="2" />
+      <label for="3">Channel 4:</label
+      ><input type="checkbox" name="channel" id="3" /><br /><br />
+      <button id="record">Record selected channels</button
+      ><button id="run">Run selected channels</button>
+    </div>
     <script src="./script.js"></script>
   </body>
 </html>

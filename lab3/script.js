@@ -1,5 +1,7 @@
-const channels = document.querySelectorAll(".channel-record");
-const channelsRunners = document.querySelectorAll(".channel-run");
+let channels; //= document.querySelectorAll('input[name="channel"]');
+const btnRecord = document.querySelector("#record");
+const btnRun = document.querySelector("#run");
+//const channelsRunners = document.querySelectorAll(".channel-run");
 
 const recordingObjects = [];
 
@@ -20,28 +22,40 @@ const getRecordingObject = (i) => {
   return recordingObjects[i];
 };
 
-const recordingLogic = (e, i) => {
+const getCheckedChannelIds = () => {
+  return [...document.querySelectorAll('input[name="channel"]:checked')].map(
+    (e) => {
+      return e.id;
+    }
+  );
+};
+
+const getCheckedChannels = () => {
+  return [...document.querySelectorAll('input[name="channel"]:checked')];
+};
+
+const recordingLogic = (i) => {
   this.recordingObject = getRecordingObject(i);
   if (!this.recordingObject.IsOn) {
     this.recordingObject.Recording = [];
     this.recordingObject.IsOn = true;
     this.recordingObject.StartDate = new Date();
     this.recordingObject.IsOn;
-    e.textContent = `Stop recording`;
-    document.querySelector(`#run-${i}`).disabled = true;
+    [...document.querySelectorAll('input[name="channel"]')].forEach(
+      (e) => (e.disabled = true)
+    );
+    btnRun.disabled = true;
+    btnRecord.textContent = "Stop recording";
   } else {
     this.recordingObject.IsOn = false;
-    e.textContent = `Record on channel ${i + 1}`;
-    document.querySelector(`#run-${i}`).disabled = false;
+    [...document.querySelectorAll('input[name="channel"]')].forEach(
+      (e) => (e.disabled = false)
+    );
+    btnRecord.textContent = "Record selected channels";
+    btnRun.disabled = false;
   }
   return;
 };
-
-channels.forEach((e, i) => {
-  e.addEventListener("click", () => {
-    recordingLogic(e, i);
-  });
-});
 
 const keySoundPairs = {
   q: new Audio("./sounds/boom.wav"),
@@ -91,8 +105,10 @@ const playRecording = (i) => {
   );
 };
 
-channelsRunners.forEach((e, i) => {
-  e.addEventListener("click", () => {
-    playRecording(i);
-  });
+btnRecord.addEventListener("click", () => {
+  getCheckedChannelIds().map((i) => recordingLogic(i));
+});
+
+btnRun.addEventListener("click", () => {
+  getCheckedChannelIds().map((i) => playRecording(i));
 });
