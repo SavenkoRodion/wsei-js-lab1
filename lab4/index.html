@@ -38,7 +38,7 @@
         padding: 5px;
         margin: 10px;
       }
-      .card > div {
+      .card div {
         border: 1px solid black;
         padding: 10px;
       }
@@ -46,11 +46,22 @@
       .card-footer button {
         margin-right: 5px;
       }
+      .card-tag-container * {
+        margin-top: 10px;
+      }
+      .card-tag-btn-container {
+        border: none !important;
+      }
     </style>
   </head>
   <body>
     <h1>Lab4 - notekeep</h1>
-    <button id="btn-create">Add card</button>
+    <button id="btn-create">Add card</button><br />
+    <hr />
+    <div>
+      <p>Selected tags:<span id="selected-tags"></span></p>
+    </div>
+    <hr />
     <div id="app-wrapper">
       <div id="pinned-cards"></div>
     </div>

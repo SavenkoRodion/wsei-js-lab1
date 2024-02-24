@@ -105,6 +105,59 @@ const replaceEditBtnWithSaveBtn = (id) => {
   footer.replaceChild(saveButton, footer.childNodes[0]);
 };
 
+const replaceInputWithTagButtons = (id) => {
+  const tagContainer = document.querySelector(
+    `#card-${id} > .card-tag-container`
+  );
+
+  const tagBtnContainer = document.createElement("div");
+  tagBtnContainer.className = "card-tag-btn-container";
+
+  const tags = tagContainer.querySelector("input").value;
+  tagContainer.removeChild(tagContainer.querySelector("input"));
+
+  tagContainer.appendChild(tagBtnContainer);
+
+  if (!tags) return;
+
+  tags.split(",").map((e) => {
+    if (e.trim()) {
+      let temp = document.createElement("button");
+      temp.textContent = e.trim();
+      tagBtnContainer.appendChild(temp);
+    }
+  });
+  tagContainer.appendChild(tagBtnContainer);
+};
+
+const replaceTagButtonsWithInput = (id) => {
+  const tagContainer = document.querySelector(
+    `#card-${id} > .card-tag-container`
+  );
+
+  const tagInput = document.createElement("input");
+
+  const tags = tagContainer.querySelectorAll(".card-tag-btn-container button");
+
+  tagContainer.appendChild(tagInput);
+
+  if (!tags?.length) {
+    tagContainer.removeChild(
+      tagContainer.querySelector(".card-tag-btn-container")
+    );
+    return;
+  }
+
+  [...tags].map((e) => {
+    tagInput.value += e.textContent.trim() + ",";
+    tagContainer.querySelector(".card-tag-btn-container").removeChild(e);
+  });
+
+  tagContainer.removeChild(
+    tagContainer.querySelector(".card-tag-btn-container")
+  );
+};
+
 class Card {
   #isSaved = false;
   #isCreated = false;
@@ -142,7 +195,7 @@ class Card {
     if (this.#isSaved) return;
     this.#isSaved = true;
     this.#isCreated = true;
-    this.transformCardToSave();
+    this.#transformCardToSave();
 
     saveToLocalstorage();
 
@@ -152,15 +205,18 @@ class Card {
   editCardData = () => {
     if (!this.#isSaved) return;
     this.#isSaved = !this.#isSaved;
-    console.log(this.#id);
-    this.transformCardToEdit();
+
+    this.#transformCardToEdit();
+
     saveToLocalstorage();
+
     return this.#isSaved;
   };
 
-  transformCardToSave = () => {
+  #transformCardToSave = () => {
     convertCardInputsIntoParagraphs(this.#id);
     replaceSaveBtnWithEditBtn(this.#id);
+    replaceInputWithTagButtons(this.#id);
 
     const thisCard = getCardById(this.#id);
     thisCard.color = document.querySelector(
@@ -172,10 +228,11 @@ class Card {
     );
     colorpicker.remove();
   };
-  //refactor?
-  transformCardToEdit = () => {
+
+  #transformCardToEdit = () => {
     convertCardParagraphsIntoInputs(this.#id);
     replaceEditBtnWithSaveBtn(this.#id);
+    replaceTagButtonsWithInput(this.#id);
 
     const cardColorpickWrapper = document.createElement("div");
     cardColors.map((e) => {
@@ -324,6 +381,19 @@ const createCardColorpick = (cardObject) => {
   return cardColorpickWrapper;
 };
 
+const createCardTags = (cardObject) => {
+  const cardTagsWrapper = document.createElement("div");
+  cardTagsWrapper.className = "card-tag-container";
+  const tagsInput = document.createElement("input");
+  const tagsHeader = document.createElement("h6");
+  tagsHeader.textContent = "Card tags:";
+
+  cardTagsWrapper.appendChild(tagsHeader);
+  cardTagsWrapper.appendChild(tagsInput);
+
+  return cardTagsWrapper;
+};
+
 const createCardDate = (cardObject) => {
   if (!cardObject.dateOfCreation) cardObject.dateOfCreation = new Date();
 
@@ -370,11 +440,13 @@ const createCard = (localStorageCardObject, isGenerating = false) => {
 
   const cardColorpickWrapper = createCardColorpick(cardObject);
   const cardFooterWrapper = createCardFooter(cardObject);
+  const cardTagsWrapper = createCardTags(cardObject);
   const cardDatetimeWrapper = createCardDate(cardObject);
 
   cardWrapper.appendChild(cardHeaderWrapper);
   cardWrapper.appendChild(cardBodyWrapper);
   cardWrapper.appendChild(cardColorpickWrapper);
+  cardWrapper.appendChild(cardTagsWrapper);
   cardWrapper.appendChild(cardFooterWrapper);
   cardWrapper.appendChild(cardDatetimeWrapper);
 
