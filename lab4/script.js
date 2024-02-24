@@ -29,7 +29,7 @@ const saveToLocalstorage = () => {
         .filter((e) => {
           e.publicID = e.getCardId();
           e.publicPin = e.isCardPinned();
-          return e.isCardSaved() === true;
+          return e.isCardCreated() === true;
         })
         .sort((a, b) => {
           return a.getCardId() - b.getCardId();
@@ -107,6 +107,7 @@ const replaceEditBtnWithSaveBtn = (id) => {
 
 class Card {
   #isSaved = false;
+  #isCreated = false;
   #isPinned = false;
   #id = null;
 
@@ -124,6 +125,10 @@ class Card {
     return this.#isSaved;
   };
 
+  isCardCreated = () => {
+    return this.#isCreated;
+  };
+
   getCardId = () => {
     this.#id;
     return this.#id;
@@ -136,6 +141,7 @@ class Card {
   saveCardData = () => {
     if (this.#isSaved) return;
     this.#isSaved = true;
+    this.#isCreated = true;
     this.transformCardToSave();
 
     saveToLocalstorage();
