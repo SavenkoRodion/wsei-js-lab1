@@ -145,7 +145,11 @@ btnMetronomeRun.addEventListener("click", () => {
   }
   const bpm = 60 / inputBpm.value;
   new Audio("./sounds/tink.wav").play();
-  rythmVisualisation.style.color = "blue";
+  if (rythmVisualisation.style.color === "red") {
+    rythmVisualisation.style.color = "blue";
+  } else {
+    rythmVisualisation.style.color = "red";
+  }
   metronomeInterval = setInterval(() => {
     new Audio("./sounds/tink.wav").play();
     if (rythmVisualisation.style.color === "red") {

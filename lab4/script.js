@@ -82,12 +82,13 @@ const convertCardParagraphsIntoInputs = (id) => {
 };
 
 const replaceSaveBtnWithEditBtn = (id) => {
+  console.log("THIS");
   const footer = document.querySelector(`#card-${id} > .card-footer`);
   const editButton = document.createElement("button");
   editButton.textContent = "Edit";
 
   editButton.addEventListener("click", () => {
-    getCardById(id).editCardData();
+    getCardById(id)?.editCardData();
   });
 
   footer.replaceChild(editButton, footer.childNodes[0]);
@@ -99,42 +100,10 @@ const replaceEditBtnWithSaveBtn = (id) => {
   saveButton.textContent = "Save";
 
   saveButton.addEventListener("click", () => {
-    getCardById(id).saveCardData();
+    getCardById(id)?.saveCardData();
   });
 
   footer.replaceChild(saveButton, footer.childNodes[0]);
-};
-
-const transformCardToSave = (id) => {
-  convertCardInputsIntoParagraphs(id);
-  replaceSaveBtnWithEditBtn(id);
-
-  const thisCard = getCardById(id);
-  thisCard.color = document.querySelector(`#card-${id}`).style.backgroundColor;
-  console.log(document.querySelector(`#card-${id}`).style.backgroundColor);
-
-  const colorpicker = document.querySelector(`#card-${id} > .card-colorpick`);
-  colorpicker.remove();
-};
-
-const transformCardToEdit = (id) => {
-  convertCardParagraphsIntoInputs(id);
-  replaceEditBtnWithSaveBtn(id);
-
-  const cardColorpickWrapper = document.createElement("div");
-  cardColors.map((e) => {
-    let tempButton = document.createElement("button");
-    tempButton.style = `background-color: ${e}; padding: 15px; margin-left:5px`;
-    tempButton.addEventListener("click", () => {
-      colorPick(id, e);
-    });
-    cardColorpickWrapper.appendChild(tempButton);
-  });
-  cardColorpickWrapper.classList.add("card-colorpick");
-  const footer = document.querySelector(`#card-${id} > .card-footer`);
-  document
-    .querySelector(`#card-${id}`)
-    .insertBefore(cardColorpickWrapper, footer);
 };
 
 class Card {
@@ -166,9 +135,10 @@ class Card {
   };
 
   saveCardData = () => {
+    console.log("111");
     if (this.#isSaved) return;
     this.#isSaved = true;
-    transformCardToSave(this.#id);
+    this.transformCardToSave();
 
     saveToLocalstorage();
 
@@ -178,9 +148,45 @@ class Card {
   editCardData = () => {
     if (!this.#isSaved) return;
     this.#isSaved = !this.#isSaved;
-    transformCardToEdit(this.#id);
+    console.log(this.#id);
+    this.transformCardToEdit();
     saveToLocalstorage();
     return this.#isSaved;
+  };
+
+  transformCardToSave = () => {
+    convertCardInputsIntoParagraphs(this.#id);
+    replaceSaveBtnWithEditBtn(this.#id);
+
+    const thisCard = getCardById(this.#id);
+    thisCard.color = document.querySelector(
+      `#card-${this.#id}`
+    ).style.backgroundColor;
+
+    const colorpicker = document.querySelector(
+      `#card-${this.#id} > .card-colorpick`
+    );
+    colorpicker.remove();
+  };
+
+  transformCardToEdit = () => {
+    convertCardParagraphsIntoInputs(this.#id);
+    replaceEditBtnWithSaveBtn(this.#id);
+
+    const cardColorpickWrapper = document.createElement("div");
+    cardColors.map((e) => {
+      let tempButton = document.createElement("button");
+      tempButton.style = `background-color: ${e}; padding: 15px; margin-left:5px`;
+      tempButton.addEventListener("click", () => {
+        colorPick(this.#id, e);
+      });
+      cardColorpickWrapper.appendChild(tempButton);
+    });
+    cardColorpickWrapper.classList.add("card-colorpick");
+    const footer = document.querySelector(`#card-${this.#id} > .card-footer`);
+    document
+      .querySelector(`#card-${this.#id}`)
+      .insertBefore(cardColorpickWrapper, footer);
   };
 
   removeCard = () => {
@@ -214,14 +220,6 @@ class Card {
     appWrapper.removeChild(domCard);
     document.querySelector("#pinned-cards").appendChild(domCard);
 
-    cardsArray.splice(
-      cardsArray.findIndex((e) => {
-        return e.getCardId() === this.#id;
-      }),
-      1
-    );
-
-    cardsArray.unshift(this);
     this.#isPinned = true;
     saveToLocalstorage();
   };
@@ -241,18 +239,9 @@ class Card {
       pinButton,
       document.querySelector(`#card-${this.#id} .card-btn-unpin`)
     );
-    document.querySelector("#pinned-cards").removeChild(domCard);
+
     appWrapper.appendChild(domCard);
 
-    cardsArray;
-    this.#id = cardsArray.slice(-1)[0].getCardId() + 1;
-    cardsArray.splice(
-      cardsArray.findIndex((e) => {
-        return e.id === this.#id;
-      }),
-      1
-    );
-    cardsArray.push(this);
     this.#isPinned = false;
     domCard.id = `card-${this.#id}`;
     saveToLocalstorage();
@@ -330,8 +319,6 @@ const createCardColorpick = (cardObject) => {
 };
 
 const createCardDate = (cardObject) => {
-  console.log(cardObject.dateOfCreation);
-  console.log(typeof cardObject.dateOfCreation);
   if (!cardObject.dateOfCreation) cardObject.dateOfCreation = new Date();
 
   const cardDatetimeWrapper = document.createElement("div");
@@ -390,8 +377,6 @@ const createCard = (localStorageCardObject, isGenerating = false) => {
   appWrapper.appendChild(cardWrapper);
 
   cardsArray;
-
-  console.log(cardsArray);
 
   return true;
 };
