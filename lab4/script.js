@@ -44,8 +44,8 @@ const colorPick = (id, color) => {
 };
 
 const convertCardInputsIntoParagraphs = (id) => {
-  const header = document.querySelector(`#card-${id} > .card-header`);
-  const body = document.querySelector(`#card-${id} > .card-body`);
+  const header = document.querySelector(`#card-${id} .card-header`);
+  const body = document.querySelector(`#card-${id} .card-body`);
 
   const newHeaderText = document.createElement("p");
   const newBodyText = document.createElement("p");
@@ -65,8 +65,8 @@ const convertCardInputsIntoParagraphs = (id) => {
 };
 
 const convertCardParagraphsIntoInputs = (id) => {
-  const header = document.querySelector(`#card-${id} > .card-header`);
-  const body = document.querySelector(`#card-${id} > .card-body`);
+  const header = document.querySelector(`#card-${id} .card-header`);
+  const body = document.querySelector(`#card-${id} .card-body`);
 
   const newHeaderInput = document.createElement("input");
   const newBodyInput = document.createElement("textarea");
@@ -82,13 +82,12 @@ const convertCardParagraphsIntoInputs = (id) => {
 };
 
 const replaceSaveBtnWithEditBtn = (id) => {
-  console.log("THIS");
-  const footer = document.querySelector(`#card-${id} > .card-footer`);
+  const footer = document.querySelector(`#card-${id} .card-footer`);
   const editButton = document.createElement("button");
   editButton.textContent = "Edit";
 
   editButton.addEventListener("click", () => {
-    getCardById(id)?.editCardData();
+    getCardById(id).editCardData();
   });
 
   footer.replaceChild(editButton, footer.childNodes[0]);
@@ -100,7 +99,7 @@ const replaceEditBtnWithSaveBtn = (id) => {
   saveButton.textContent = "Save";
 
   saveButton.addEventListener("click", () => {
-    getCardById(id)?.saveCardData();
+    getCardById(id).saveCardData();
   });
 
   footer.replaceChild(saveButton, footer.childNodes[0]);
@@ -135,7 +134,6 @@ class Card {
   };
 
   saveCardData = () => {
-    console.log("111");
     if (this.#isSaved) return;
     this.#isSaved = true;
     this.transformCardToSave();
@@ -168,7 +166,7 @@ class Card {
     );
     colorpicker.remove();
   };
-
+  //refactor?
   transformCardToEdit = () => {
     convertCardParagraphsIntoInputs(this.#id);
     replaceEditBtnWithSaveBtn(this.#id);
