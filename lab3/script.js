@@ -65,15 +65,17 @@ const keySoundPairs = {
   t: new Audio("./sounds/openhat.wav"),
   y: new Audio("./sounds/ride.wav"),
   u: new Audio("./sounds/snare.wav"),
-  i: new Audio("./sounds/tink.wav"),
-  o: new Audio("./sounds/tom.wav"),
-};
-
-const getKeySoundPairs = () => {
-  return keySoundPairs;
+  i: new Audio("./sounds/tom.wav"),
 };
 
 const logKey = (e) => {
+  if (
+    !Object.entries(keySoundPairs)
+      .map((e) => e[0])
+      .includes(e.key)
+  )
+    return;
+
   this.keySoundPairs = { ...keySoundPairs };
   this.keySoundPairs[e.key].currentTime = 0;
   this.keySoundPairs[e.key].play();
@@ -111,4 +113,46 @@ btnRecord.addEventListener("click", () => {
 
 btnRun.addEventListener("click", () => {
   getCheckedChannelIds().map((i) => playRecording(i));
+});
+
+// metronome logic
+
+const inputBpm = document.querySelector("#metronome-bpm");
+const btnMetronomeRun = document.querySelector("#metronome-run");
+const rythmVisualisation = document.querySelector("#rythm-visualisation");
+let metronomeInterval;
+
+inputBpm.addEventListener("input", () => {
+  inputBpm.setCustomValidity("");
+  return;
+});
+
+btnMetronomeRun.addEventListener("click", () => {
+  inputBpm.setCustomValidity("");
+  if (!inputBpm.value) {
+    inputBpm.reportValidity();
+    return;
+  }
+  if (inputBpm.value < 1) {
+    inputBpm.setCustomValidity("Bpm can't be smaller than 1");
+    inputBpm.reportValidity();
+    return;
+  }
+  if (btnMetronomeRun.textContent === "Off") {
+    clearInterval(metronomeInterval);
+    btnMetronomeRun.textContent = "On";
+    return;
+  }
+  const bpm = 60 / inputBpm.value;
+  new Audio("./sounds/tink.wav").play();
+  rythmVisualisation.style.color = "blue";
+  metronomeInterval = setInterval(() => {
+    new Audio("./sounds/tink.wav").play();
+    if (rythmVisualisation.style.color === "red") {
+      rythmVisualisation.style.color = "blue";
+    } else {
+      rythmVisualisation.style.color = "red";
+    }
+  }, bpm * 1000);
+  btnMetronomeRun.textContent = "Off";
 });
