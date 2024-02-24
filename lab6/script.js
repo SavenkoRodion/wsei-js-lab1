@@ -1,16 +1,23 @@
 const ballSize = 10;
+const numberOfBalls = 25;
+const linkingDistance = 50;
 
 const mainCanvas = document.querySelector("#mainCanvas");
 const ctx = mainCanvas.getContext("2d");
 
+const btnStart = document.querySelector("#btn-start");
+const btnReset = document.querySelector("#btn-reset");
+const ballsNumber = document.querySelector("#balls-number");
+
 const ballsArray = [];
+let animationId;
 
 class BallObject {
   constructor() {
-    this.width = (mainCanvas.width - 20) * Math.random() + 10;
-    this.height = (mainCanvas.height - 20) * Math.random() + 10;
-    this.xSpeed = Math.random() < 0.5 ? -1 : 1;
-    this.ySpeed = Math.random() < 0.5 ? -1 : 1;
+    this.width = (mainCanvas.width - ballSize * 2) * Math.random() + ballSize;
+    this.height = (mainCanvas.height - ballSize * 2) * Math.random() + ballSize;
+    this.xSpeed = Math.random() < 0.5 ? Math.random() * -5 : Math.random() * 5;
+    this.ySpeed = Math.random() < 0.5 ? Math.random() * -5 : Math.random() * 5;
   }
 
   draw = () => {
@@ -37,19 +44,13 @@ class BallObject {
   };
 }
 
-ballsArray.push(new BallObject());
-ballsArray[0].draw();
-
-let fps;
-let requestTime;
-
-const lol = (time) => {
+const main = () => {
   ctx.clearRect(0, 0, mainCanvas.width, mainCanvas.height);
   ballsArray.map((e) => {
     e.draw();
     ballsArray.map((e2) => {
       const distance = Math.hypot(e.width - e2.width, e.height - e2.height);
-      if (distance < 50) {
+      if (distance < linkingDistance) {
         ctx.beginPath();
         ctx.moveTo(e.width, e.height);
         ctx.lineTo(e2.width, e2.height);
@@ -58,11 +59,26 @@ const lol = (time) => {
     });
   });
 
-  window.requestAnimationFrame((timeRes) => lol(timeRes));
+  animationId = window.requestAnimationFrame(() => main());
 };
 
-for (let i = 0; i < 50; i++) {
-  ballsArray.push(new BallObject());
-}
+btnStart.addEventListener("click", () => {
+  for (let i = 0; i < numberOfBalls; i++) {
+    ballsArray.push(new BallObject());
+    ballsNumber.textContent = `Current number of balls is: ${ballsArray.length}`;
+  }
+  if (btnStart.textContent === "Start") {
+    window.requestAnimationFrame((timeRes) => main(timeRes));
+    btnStart.textContent = `Add ${numberOfBalls} balls`;
+    btnReset.disabled = false;
+  }
+});
 
-window.requestAnimationFrame((timeRes) => lol(timeRes));
+btnReset.addEventListener("click", () => {
+  btnStart.textContent = `Start`;
+  btnReset.disabled = true;
+  window.cancelAnimationFrame(animationId);
+  ctx.clearRect(0, 0, mainCanvas.width, mainCanvas.height);
+  ballsArray.splice(0, ballsArray.length);
+  ballsNumber.textContent = "";
+});
