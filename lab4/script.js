@@ -203,19 +203,19 @@ class Card {
 
   pinCard = () => {
     const domCard = document.querySelector(`#card-${this.#id}`);
-    const domCardFooter = document.querySelector(
-      `#card-${this.#id} .card-footer`
+    const pinBtn = document.querySelector(
+      `#card-${this.#id} > .card-footer > .card-btn-pin`
     );
 
-    const unpinButton = document.createElement("button");
-    unpinButton.textContent = "Unpin";
-    unpinButton.addEventListener("click", this.unpinCard);
-    unpinButton.classList.add("card-btn-unpin");
-    domCardFooter.replaceChild(
-      unpinButton,
-      document.querySelector(`#card-${this.#id} .card-btn-pin`)
-    );
-    appWrapper.removeChild(domCard);
+    if (!pinBtn) return;
+    const btnClone = pinBtn.cloneNode(true);
+    btnClone.textContent = "Unpin";
+    btnClone.addEventListener("click", () => {
+      this.unpinCard();
+    });
+    btnClone.className = "card-btn-unpin";
+
+    domCard.querySelector(".card-footer").replaceChild(btnClone, pinBtn);
     document.querySelector("#pinned-cards").appendChild(domCard);
 
     this.#isPinned = true;
@@ -224,20 +224,22 @@ class Card {
 
   unpinCard = () => {
     const domCard = document.querySelector(`#card-${this.#id}`);
-    const domCardFooter = document.querySelector(
-      `#card-${this.#id} .card-footer`
+    const unpinBtn = document.querySelector(
+      `#card-${this.#id} > .card-footer > .card-btn-unpin`
     );
 
-    const pinButton = document.createElement("button");
-    pinButton.textContent = "Pin";
-    pinButton.addEventListener("click", this.pinCard);
-    pinButton.classList.add("card-btn-pin");
+    if (!unpinBtn) return;
+    const btnClone = unpinBtn.cloneNode(true);
+    btnClone.textContent = "Pin";
+    btnClone.removeEventListener("click", () => {
+      this.unpinCard();
+    });
+    btnClone.addEventListener("click", () => {
+      this.pinCard();
+    });
+    btnClone.className = "card-btn-pin";
 
-    domCardFooter.replaceChild(
-      pinButton,
-      document.querySelector(`#card-${this.#id} .card-btn-unpin`)
-    );
-
+    domCard.querySelector(".card-footer").replaceChild(btnClone, unpinBtn);
     appWrapper.appendChild(domCard);
 
     this.#isPinned = false;
@@ -385,7 +387,7 @@ btnCreate.addEventListener("click", createCard);
 const generateCardsFromStorage = () => {
   const fromStorage = JSON.parse(localStorage.getItem("cardsArray"));
   console.log(fromStorage);
-  if (fromStorage.length)
+  if (fromStorage?.length)
     fromStorage.map((e) => {
       createCard(e, true);
       getCardById(e.publicID).saveCardData();
