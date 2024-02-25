@@ -120,7 +120,13 @@ const replaceInputWithTagButtons = (id) => {
 
   if (!tags) return;
 
-  tags.split(",").map((e) => {
+  const tagsArray = tags
+    .split(",")
+    .filter((e, i) => tags.split(",").indexOf(e) === i);
+
+  getCardById(id).tagsString = tagsArray.join(",");
+
+  tagsArray.map((e) => {
     if (e.trim()) {
       let temp = document.createElement("button");
       temp.textContent = e.trim();
@@ -172,6 +178,7 @@ class Card {
     this.publicID;
     this.publicPin;
     this.dateOfCreation;
+    this.tagsString;
   }
 
   isCardSaved = () => {
@@ -197,6 +204,7 @@ class Card {
     this.#isCreated = true;
     this.#transformCardToSave();
 
+    console.log(cardsArray);
     saveToLocalstorage();
 
     return this.#isSaved;
@@ -388,6 +396,9 @@ const createCardTags = (cardObject) => {
   const tagsHeader = document.createElement("h6");
   tagsHeader.textContent = "Card tags:";
 
+  console.log(cardObject.tagsString);
+  if (cardObject.tagsString) tagsInput.value = cardObject.tagsString;
+
   cardTagsWrapper.appendChild(tagsHeader);
   cardTagsWrapper.appendChild(tagsInput);
 
@@ -429,6 +440,7 @@ const createCard = (localStorageCardObject, isGenerating = false) => {
   if (isGenerating) {
     cardWrapper.style.backgroundColor = localStorageCardObject.color;
     cardObject.dateOfCreation = new Date(localStorageCardObject.dateOfCreation);
+    cardObject.tagsString = localStorageCardObject.tagsString;
   }
 
   const cardHeaderWrapper = isGenerating

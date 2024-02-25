@@ -33,8 +33,7 @@
 
       .card {
         border: 1px solid black;
-        width: min-content;
-        max-width: 250px;
+        width: 250px;
         padding: 5px;
         margin: 10px;
       }
@@ -51,6 +50,11 @@
       }
       .card-tag-btn-container {
         border: none !important;
+        display: flex;
+        flex-direction: row;
+        gap: 5px;
+        flex-wrap: wrap;
+        padding: 0 !important;
       }
     </style>
   </head>
@@ -59,7 +63,7 @@
     <button id="btn-create">Add card</button><br />
     <hr />
     <div>
-      <p>Selected tags:<span id="selected-tags"></span></p>
+      <p>Tags should be unique and separated with coma</p>
     </div>
     <hr />
     <div id="app-wrapper">
