@@ -40,6 +40,7 @@ const saveToLocalstorage = () => {
         })
     )
   );
+  console.log(localStorage.getItem("weatherCardsArray"));
 };
 
 class Card {
@@ -84,63 +85,47 @@ class Card {
     else document.querySelector("#pinned-cards").removeChild(domCard);
     saveToLocalstorage();
   };
-
   pinCard = () => {
     const domCard = document.querySelector(`#card-${this.#id}`);
-    const domCardFooter = document.querySelector(
-      `#card-${this.#id} .card-footer`
+    const pinBtn = document.querySelector(
+      `#card-${this.#id} > .card-footer > .card-btn-pin`
     );
 
-    const unpinButton = document.createElement("button");
-    unpinButton.textContent = "Unpin";
-    unpinButton.addEventListener("click", this.unpinCard);
-    unpinButton.classList.add("card-btn-unpin");
-    domCardFooter.replaceChild(
-      unpinButton,
-      document.querySelector(`#card-${this.#id} .card-btn-pin`)
-    );
-    appWrapper.removeChild(domCard);
+    if (!pinBtn) return;
+    const btnClone = pinBtn.cloneNode(true);
+    btnClone.textContent = "Unpin";
+    btnClone.addEventListener("click", () => {
+      this.unpinCard();
+    });
+    btnClone.className = "card-btn-unpin";
+
+    domCard.querySelector(".card-footer").replaceChild(btnClone, pinBtn);
     document.querySelector("#pinned-cards").appendChild(domCard);
 
-    cardsArray.splice(
-      cardsArray.findIndex((e) => {
-        return e.getCardId() === this.#id;
-      }),
-      1
-    );
-
-    cardsArray.unshift(this);
     this.#isPinned = true;
     saveToLocalstorage();
   };
 
   unpinCard = () => {
     const domCard = document.querySelector(`#card-${this.#id}`);
-    const domCardFooter = document.querySelector(
-      `#card-${this.#id} .card-footer`
+    const unpinBtn = document.querySelector(
+      `#card-${this.#id} > .card-footer > .card-btn-unpin`
     );
 
-    const pinButton = document.createElement("button");
-    pinButton.textContent = "Pin";
-    pinButton.addEventListener("click", this.pinCard);
-    pinButton.classList.add("card-btn-pin");
+    if (!unpinBtn) return;
+    const btnClone = unpinBtn.cloneNode(true);
+    btnClone.textContent = "Pin";
+    btnClone.removeEventListener("click", () => {
+      this.unpinCard();
+    });
+    btnClone.addEventListener("click", () => {
+      this.pinCard();
+    });
+    btnClone.className = "card-btn-pin";
 
-    domCardFooter.replaceChild(
-      pinButton,
-      document.querySelector(`#card-${this.#id} .card-btn-unpin`)
-    );
-    document.querySelector("#pinned-cards").removeChild(domCard);
+    domCard.querySelector(".card-footer").replaceChild(btnClone, unpinBtn);
     appWrapper.appendChild(domCard);
 
-    cardsArray;
-    this.#id = cardsArray.slice(-1)[0].getCardId() + 1;
-    cardsArray.splice(
-      cardsArray.findIndex((e) => {
-        return e.id === this.#id;
-      }),
-      1
-    );
-    cardsArray.push(this);
     this.#isPinned = false;
     domCard.id = `card-${this.#id}`;
     saveToLocalstorage();
@@ -292,12 +277,17 @@ const generateCardsFromStorage = async () => {
   const fromStorage = JSON.parse(localStorage.getItem("weatherCardsArray"));
   if (fromStorage?.length)
     fromStorage.map(async (e) => {
+      console.log(e);
       const res = await fetch(
         `https://api.openweathermap.org/data/2.5/weather?q=${e.city}&units=metric&appid=108dd9a67c96f23039937fe6f3c91963`
       );
       let resData = await res.json();
-      createCard(resData, true);
-      if (e.publicPin) getCardById(e.publicID).pinCard();
+      createCard({ ...e, ...resData }, true);
+      if (e.publicPin) {
+        console.log(e);
+        console.log(cardsArray);
+        getCardById(e.publicID).pinCard();
+      }
     });
 };
 
